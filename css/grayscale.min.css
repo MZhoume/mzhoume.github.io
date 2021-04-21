@@ -213,9 +213,9 @@ a:focus, a:hover {
     -o-background-size: cover */
 }
 @media (min-width:767px) {
-    .content-section {
+    /* .content-section {
         padding-top: 250px
-    }
+    } */
     .contact-section {
         padding: 100px 0
     }
