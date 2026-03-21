@@ -65,8 +65,10 @@
                 inset: 0;
                 z-index: -1;
                 background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
+                backdrop-filter: blur(28px);
+                -webkit-backdrop-filter: blur(28px);
+                -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+                mask-image: linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
                 opacity: 0;
                 transition: opacity 0.2s ease-in-out;
             }
@@ -196,7 +198,7 @@
 
             .social-buttons li { list-style: none; }
 
-            /* Use var(--pico-primary) for theme consistency; fallback ensures styling without Pico */
+            /* Match social buttons to the blue tones in the hero image */
             .social-buttons a[role="button"] {
                 display: inline-flex;
                 align-items: center;
@@ -204,9 +206,9 @@
                 gap: 0.5rem;
                 width: 10rem;
                 padding: 0.75rem 1.5rem;
-                border: 1px solid var(--pico-primary, #42DCA3);
+                border: 1px solid #3a457b;
                 border-radius: 0;
-                color: var(--pico-primary, #42DCA3);
+                color: #3a457b;
                 background-color: transparent;
                 text-decoration: none;
                 font-family: 'Montserrat', sans-serif;
@@ -216,8 +218,8 @@
             }
 
             .social-buttons a[role="button"]:hover {
-                color: var(--pico-primary-inverse, #000);
-                background-color: var(--pico-primary, #42DCA3);
+                color: #fff;
+                background-color: #3a457b;
             }
 
             /* Footer */
