@@ -114,7 +114,8 @@
     <!-- Footer -->
     <footer>
         <div class="container text-center">
-            <p style="font-size:13px;">Copyright &copy; Ming Zhou 2026</p>
+            <p style="font-size:13px;">Copyright &copy; Ming Zhou <span id="copyright-year"></span></p>
+            <script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
         </div>
     </footer>
 
