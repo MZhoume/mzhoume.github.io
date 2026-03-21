@@ -45,7 +45,7 @@
                 letter-spacing: 1px;
             }
 
-            /* Navigation — always blurred with a light dark tint */
+            /* Navigation */
             nav.site-nav {
                 position: fixed;
                 top: 0; left: 0; right: 0;
@@ -58,16 +58,20 @@
                 letter-spacing: 1px;
             }
 
-            /* Blur overlay: light dark tint + blur, always visible */
+            /* Blur overlay: applied only after scrolling */
             nav.site-nav::before {
                 content: '';
                 position: absolute;
                 inset: 0;
                 z-index: -1;
-                background-color: rgba(0, 0, 0, 0.35);
+                background-color: rgba(0, 0, 0, 0.2);
                 backdrop-filter: blur(20px);
                 -webkit-backdrop-filter: blur(20px);
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
             }
+
+            nav.site-nav.is-scrolled::before { opacity: 1; }
 
             nav.site-nav .nav-inner {
                 display: flex;
@@ -163,8 +167,8 @@
 
             /* Contact */
             #contact {
-                background-color: #2b2b2b;
-                padding: 8rem 1rem;
+                background-color: #1f1f1f;
+                padding: 5rem 1.5rem;
                 text-align: center;
             }
 
@@ -219,12 +223,12 @@
             /* Footer */
             body > footer {
                 background-color: #000;
-                padding: 1.25rem 1rem;
+                padding: 0.75rem 1rem;
                 text-align: center;
                 border-top: none;
             }
 
-            body > footer p { color: #fff; margin: 0; font-size: 0.75rem; }
+            body > footer p { color: #fff; margin: 0; font-size: 0.6875rem; }
         </style>
     </head>
 
@@ -282,6 +286,14 @@
         </footer>
 
         <script>
+            const siteNav = document.querySelector('.site-nav');
+            const updateNavScrollState = () => {
+                if (!siteNav) return;
+                siteNav.classList.toggle('is-scrolled', window.scrollY > 0);
+            };
+
+            updateNavScrollState();
+            window.addEventListener('scroll', updateNavScrollState, { passive: true });
             document.getElementById('copyright-year').textContent = new Date().getFullYear();
         </script>
     </body>
