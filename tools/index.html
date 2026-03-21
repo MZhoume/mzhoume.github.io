@@ -54,6 +54,25 @@
         main {
             grid-column: 2;
         }
+
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
+            }
+
+            aside {
+                grid-row: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--pico-muted-border-color, #d6d6d6);
+                padding-top: 0;
+            }
+
+            header,
+            main {
+                grid-column: 1;
+            }
+        }
     </style>
 </head>
 <body>
