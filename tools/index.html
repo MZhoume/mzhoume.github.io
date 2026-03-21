@@ -7,26 +7,54 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <style>
         :root {
-            --sidebar-width: 14rem;
+            --sidebar-width: 17rem;
+            --sidebar-collapsed-width: 5rem;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
             display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr;
             grid-template-rows: auto 1fr;
+            background-color: var(--pico-background-color, #ffffff);
         }
 
-        header {
-            grid-column: 2;
+        header.page-header {
+            grid-column: 1;
             border-bottom: 1px solid var(--pico-muted-border-color, #d6d6d6);
             margin: 0;
         }
 
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header-inner h1 {
+            margin: 0;
+        }
+
+        #sidebar-toggle {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .tools-layout {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            min-height: 0;
+        }
+
+        body.sidebar-collapsed .tools-layout {
+            grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+        }
+
         aside {
-            grid-row: 1 / span 2;
             border-right: 1px solid var(--pico-muted-border-color, #d6d6d6);
+            background-color: var(--pico-card-background-color, #111218);
+            color: var(--pico-contrast, #f2f2f2);
             padding-top: 1rem;
         }
 
@@ -39,16 +67,39 @@
         }
 
         aside a {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
             padding: 0.6rem 0.8rem;
             border-radius: 0.5rem;
             text-decoration: none;
+            color: var(--pico-contrast, #f2f2f2);
         }
 
         aside a[aria-current="page"] {
-            background-color: var(--pico-primary-background, #0172ad);
+            background-color: var(--pico-primary-background, #6c47ff);
             color: var(--pico-primary-inverse, #ffffff);
             font-weight: 700;
+        }
+
+        .tool-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.5rem;
+            flex: 0 0 1.5rem;
+        }
+
+        .sidebar-section {
+            margin: 0.5rem 0 0.6rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            color: var(--pico-muted-color, #a3a3a3);
+        }
+
+        body.sidebar-collapsed .tool-label,
+        body.sidebar-collapsed .sidebar-section {
+            display: none;
         }
 
         main {
@@ -56,38 +107,64 @@
         }
 
         @media (max-width: 768px) {
-            body {
+            .tools-layout {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr;
             }
 
             aside {
-                grid-row: auto;
                 border-right: none;
                 border-bottom: 1px solid var(--pico-muted-border-color, #d6d6d6);
                 padding-top: 0;
             }
 
-            header,
             main {
                 grid-column: 1;
+            }
+
+            body.sidebar-collapsed .tools-layout {
+                grid-template-columns: 1fr;
+            }
+
+            body.sidebar-collapsed .tool-label,
+            body.sidebar-collapsed .sidebar-section {
+                display: revert;
             }
         }
     </style>
 </head>
 <body>
-    <aside class="container-fluid">
-        <nav aria-label="Tools sidebar">
-            <ul>
-                <li><a href="/tools/" aria-current="page">Welcome</a></li>
-            </ul>
-        </nav>
-    </aside>
-    <header class="container-fluid">
-        <h1>Welcome</h1>
+    <header class="container-fluid page-header">
+        <div class="header-inner">
+            <h1>Welcome</h1>
+            <button id="sidebar-toggle" type="button" aria-controls="tools-sidebar" aria-expanded="true">Collapse sidebar</button>
+        </div>
     </header>
-    <main class="container-fluid">
-        <p>Select a tool from the sidebar to get started.</p>
-    </main>
+    <div class="tools-layout">
+        <aside id="tools-sidebar" class="container-fluid">
+            <nav aria-label="Tools sidebar">
+                <h2 class="sidebar-section">Tools</h2>
+                <ul>
+                    <li><a href="/tools/" aria-current="page"><span class="tool-icon" aria-hidden="true">🏠</span><span class="tool-label">Welcome</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="container-fluid">
+            <p>Select a tool from the sidebar to get started.</p>
+        </main>
+    </div>
+    <script>
+        const sidebarToggle = document.querySelector("#sidebar-toggle");
+
+        const syncSidebarButton = () => {
+            const collapsed = document.body.classList.contains("sidebar-collapsed");
+            sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+            sidebarToggle.textContent = collapsed ? "Expand sidebar" : "Collapse sidebar";
+        };
+
+        sidebarToggle.addEventListener("click", () => {
+            document.body.classList.toggle("sidebar-collapsed");
+            syncSidebarButton();
+        });
+    </script>
 </body>
 </html>
