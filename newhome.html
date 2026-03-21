@@ -72,10 +72,6 @@
                 transition: opacity 0.5s ease-in-out;
             }
 
-            @media (max-width: 767px) {
-                nav.site-nav { padding: 0.75rem 1rem; }
-            }
-
             /* JS adds .scrolled once the user scrolls past the hero */
             nav.site-nav.scrolled { padding: 0.75rem 1rem; }
             nav.site-nav.scrolled::before { opacity: 1; }
@@ -155,6 +151,11 @@
                 50%       { transform: scale(1.2); }
             }
 
+            @-webkit-keyframes pulse {
+                0%, 100% { -webkit-transform: scale(1); transform: scale(1); }
+                50%      { -webkit-transform: scale(1.2); transform: scale(1.2); }
+            }
+
             .btn-circle {
                 display: inline-flex;
                 align-items: center;
@@ -170,26 +171,20 @@
             }
 
             .btn-circle:hover { background: rgba(255, 255, 255, 0.1); }
-            .btn-circle:hover svg { animation: pulse 1.5s linear infinite; }
+            .btn-circle:hover svg {
+                -webkit-animation: pulse 1.5s linear infinite;
+                animation: pulse 1.5s linear infinite;
+            }
 
             /* Contact */
             #contact {
                 background-color: #000;
-                padding: clamp(5rem, 8vw, 6rem) 1rem;
+                padding: clamp(7rem, 12vw, 9rem) 1rem;
                 text-align: center;
             }
 
             .contact-wrapper {
-                max-width: 700px;
-                margin: 0 auto;
-            }
-
-            #contact h2 { color: #fff; margin: 0 0 1.5rem; }
-
-            #contact p {
-                color: #fff;
-                font-size: clamp(1.125rem, 2vw, 1.25rem);
-                margin-bottom: 0.625rem;
+                max-width: 720px;
             }
 
             .social-buttons {
@@ -203,34 +198,6 @@
 
             .social-buttons li { list-style: none; }
 
-            @media (max-width: 767px) {
-                .social-buttons { flex-direction: column; align-items: center; }
-            }
-
-            /* Use var(--pico-primary) for theme consistency; fallback ensures styling without Pico */
-            .social-buttons a[role="button"] {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                width: 10rem;
-                padding: 0.75rem 1.5rem;
-                border: 1px solid var(--pico-primary, #42DCA3);
-                border-radius: 0;
-                color: var(--pico-primary, #42DCA3);
-                background-color: transparent;
-                text-decoration: none;
-                font-family: 'Montserrat', sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-            }
-
-            .social-buttons a[role="button"]:hover {
-                color: var(--pico-primary-inverse, #000);
-                background-color: var(--pico-primary, #42DCA3);
-            }
-
             /* Footer */
             body > footer {
                 background-color: #000;
@@ -240,6 +207,14 @@
             }
 
             body > footer p { color: #fff; margin: 0; font-size: 0.8125rem; }
+
+            .social-buttons a[role="button"] {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-width: 10rem;
+                justify-content: center;
+            }
         </style>
     </head>
 
@@ -270,8 +245,8 @@
 
         <!-- Contact -->
         <section id="contact">
-            <div class="contact-wrapper">
-                <h2>Contact Ming Zhou</h2>
+            <div class="container contact-wrapper">
+                <h2>Contact me</h2>
                 <p>Feel free to email me for anything, or to just say hello!</p>
                 <p>contact [at] mzhou.me</p>
                 <ul class="social-buttons">
