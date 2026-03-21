@@ -10,66 +10,61 @@
 
         <title>Ming Zhou</title>
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css"
+              integrity="sha384-7P0NVe9LPDbUCAF+fH2R8Egwz1uqNH83Ns/bfJY0fN2XCDBMUI2S9gGzIOIRBKsA"
+              crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
         <style>
-            /* Smooth scrolling for anchor links */
-            html {
-                scroll-behavior: smooth;
+            html { scroll-behavior: smooth; }
+
+            @media (prefers-reduced-motion: reduce) {
+                html { scroll-behavior: auto; }
+                .btn-circle:hover svg { animation: none; }
             }
 
             :root {
-                --pico-font-family: 'Lora', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                --pico-font-family-sans-serif: 'Lora', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                --pico-font-family: 'Lora', serif;
+                --pico-font-family-sans-serif: 'Lora', serif;
                 --pico-background-color: #000;
                 --pico-color: #fff;
                 --pico-primary: #42DCA3;
                 --pico-primary-hover: #1d9b6c;
                 --pico-primary-focus: rgba(66, 220, 163, 0.25);
                 --pico-primary-inverse: #000;
-                --pico-secondary-background: transparent;
-                --pico-card-background-color: #111;
-                --pico-card-border-color: rgba(255, 255, 255, 0.1);
-                --pico-nav-background-color: transparent;
-                --pico-nav-border-color: rgba(255, 255, 255, 0.3);
             }
 
-            body {
-                background-color: #000;
-                color: #fff;
-            }
+            /* Base — explicit so the page renders correctly even if the CDN fails */
+            body { background-color: #000; color: #fff; }
 
-            /* Headings */
             h1, h2, h3, h4, h5, h6 {
-                font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-family: 'Montserrat', sans-serif;
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 1px;
             }
 
-            /* Navigation — transparent at page-top on desktop, solid after scrolling */
+            /* Navigation — transparent at page-top on desktop, solid after scrolling past the hero */
             nav.site-nav {
                 position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
+                top: 0; left: 0; right: 0;
                 z-index: 1000;
                 background-color: transparent;
                 border-bottom: none;
-                padding: 1.25rem 0;
-                font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                padding: 1.25rem 1rem;
+                font-family: 'Montserrat', sans-serif;
                 text-transform: uppercase;
                 letter-spacing: 1px;
-                transition: background-color 0.5s ease-in-out, padding 0.5s ease-in-out, border-bottom-color 0.5s ease-in-out;
+                transition: background-color 0.5s ease-in-out, padding 0.5s ease-in-out;
             }
 
-            /* On mobile the nav is always solid (matches original Bootstrap behaviour) */
+            /* On mobile the nav is always solid */
             @media (max-width: 767px) {
                 nav.site-nav {
                     background-color: #000;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-                    padding: 0.75rem 0;
+                    padding: 0.75rem 1rem;
                 }
             }
 
@@ -77,64 +72,55 @@
             nav.site-nav.scrolled {
                 background-color: #000;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-                padding: 0.75rem 0;
+                padding: 0.75rem 1rem;
             }
 
-            nav.site-nav .container {
+            nav.site-nav .nav-inner {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 max-width: 1140px;
                 margin: 0 auto;
-                padding: 0 1rem;
             }
 
             nav.site-nav .nav-brand {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.4rem;
-                font-weight: 700;
                 font-size: 1rem;
+                font-weight: 700;
                 color: #fff;
                 text-decoration: none;
-                letter-spacing: 1px;
             }
 
-            nav.site-nav .nav-brand:hover {
-                color: rgba(255, 255, 255, 0.8);
-            }
+            nav.site-nav .nav-brand .light { font-weight: 400; }
+
+            nav.site-nav .nav-brand:hover,
+            nav.site-nav .nav-links a:hover { color: rgba(255, 255, 255, 0.8); }
 
             nav.site-nav .nav-links {
                 display: flex;
                 gap: 1.5rem;
                 list-style: none;
-                margin: 0;
-                padding: 0;
+                margin: 0; padding: 0;
             }
 
             nav.site-nav .nav-links a {
                 color: #fff;
                 text-decoration: none;
                 font-size: 0.9rem;
-                letter-spacing: 1px;
                 transition: color 0.2s ease-in-out;
             }
 
-            nav.site-nav .nav-links a:hover {
-                color: rgba(255, 255, 255, 0.8);
-            }
-
-            /* Intro / Hero — use body > header.intro to beat Pico's body > header rule */
-            body > header.intro,
-            .intro {
+            /* Hero */
+            body > header.intro {
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 min-height: 100vh;
                 text-align: center;
                 color: #fff;
-                background: url('img/intro-bg.jpg') bottom center no-repeat #000;
-                background-size: cover;
+                background: url('img/intro-bg.jpg') bottom center / cover no-repeat #000;
                 padding: 6rem 1rem 3rem;
                 margin: 0;
             }
@@ -146,44 +132,28 @@
             }
 
             .brand-heading {
-                font-size: 3rem;
+                font-size: clamp(3rem, 8vw, 6rem);
                 font-weight: 400;
-                margin-top: 0;
-                margin-bottom: 1rem;
                 color: #fff;
-            }
-
-            @media (min-width: 768px) {
-                .brand-heading {
-                    font-size: 6rem;
-                }
+                margin: 0 0 1rem;
             }
 
             .intro-text {
-                font-size: 1.125rem;
-                margin-bottom: 2rem;
+                font-size: clamp(1.125rem, 2.5vw, 1.625rem);
                 color: #fff;
+                margin-bottom: 2rem;
             }
 
-            @media (min-width: 768px) {
-                .intro-text {
-                    font-size: 1.625rem;
-                }
-            }
-
-            /* Pulse animation — mirrors original fa-angle-double-down animated behaviour */
             @keyframes pulse {
                 0%, 100% { transform: scale(1); }
                 50%       { transform: scale(1.2); }
             }
 
-            /* Scroll-down circle button */
             .btn-circle {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                width: 70px;
-                height: 70px;
+                width: 70px; height: 70px;
                 border: 2px solid #fff;
                 border-radius: 50%;
                 color: #fff;
@@ -191,19 +161,12 @@
                 text-decoration: none;
                 transition: background 0.3s ease-in-out;
                 margin-top: 0.5rem;
-                cursor: pointer;
             }
 
-            .btn-circle:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #fff;
-            }
+            .btn-circle:hover { background: rgba(255, 255, 255, 0.1); }
+            .btn-circle:hover svg { animation: pulse 1.5s linear infinite; }
 
-            .btn-circle:hover svg {
-                animation: pulse 1.5s linear infinite;
-            }
-
-            /* Contact Section */
+            /* Contact */
             #contact {
                 background-color: #000;
                 padding: 5rem 1rem;
@@ -211,91 +174,76 @@
             }
 
             @media (min-width: 768px) {
-                #contact {
-                    padding: 6rem 1rem;
-                }
+                #contact { padding: 6rem 1rem; }
             }
 
-            #contact h2 {
-                color: #fff;
-                margin-top: 0;
-                margin-bottom: 1.5rem;
+            .contact-wrapper {
+                max-width: 700px;
+                margin: 0 auto;
             }
+
+            #contact h2 { color: #fff; margin: 0 0 1.5rem; }
 
             #contact p {
                 color: #fff;
-                font-size: 1.125rem;
+                font-size: clamp(1.125rem, 2vw, 1.25rem);
                 margin-bottom: 0.625rem;
             }
 
-            @media (min-width: 768px) {
-                #contact p {
-                    font-size: 1.25rem;
-                }
-            }
-
-            /* Social buttons */
             .social-buttons {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 1rem;
                 list-style: none;
-                margin: 1.5rem 0 0;
-                padding: 0;
+                margin: 1.5rem 0 0; padding: 0;
             }
 
             @media (max-width: 767px) {
-                .social-buttons {
-                    flex-direction: column;
-                    align-items: center;
-                }
+                .social-buttons { flex-direction: column; align-items: center; }
             }
 
-            .social-buttons a {
+            /* Use var(--pico-primary) for theme consistency; fallback ensures styling without Pico */
+            .social-buttons a[role="button"] {
                 display: inline-flex;
                 align-items: center;
                 gap: 0.5rem;
                 padding: 0.75rem 1.5rem;
-                border: 1px solid #42DCA3;
-                color: #42DCA3;
+                border: 1px solid var(--pico-primary, #42DCA3);
+                border-radius: 0;
+                color: var(--pico-primary, #42DCA3);
                 background-color: transparent;
                 text-decoration: none;
-                font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                font-size: 1rem;
+                font-family: 'Montserrat', sans-serif;
                 text-transform: uppercase;
                 letter-spacing: 1px;
-                transition: all 0.3s ease-in-out;
+                transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
             }
 
-            .social-buttons a:hover {
-                border-color: #42DCA3;
-                color: #000;
-                background-color: #42DCA3;
+            .social-buttons a[role="button"]:hover {
+                color: var(--pico-primary-inverse, #000);
+                background-color: var(--pico-primary, #42DCA3);
             }
 
-            /* Footer — use body > footer to match Pico's selector specificity */
+            /* Footer */
             body > footer {
+                background-color: #000;
                 padding: 3rem 1rem;
                 text-align: center;
-                background-color: #000;
+                border-top: none;
             }
 
-            body > footer p {
-                margin: 0;
-                font-size: 0.8125rem;
-                color: #fff;
-            }
+            body > footer p { color: #fff; margin: 0; font-size: 0.8125rem; }
         </style>
     </head>
 
     <body>
         <!-- Navigation -->
         <nav class="site-nav" role="navigation" aria-label="Main navigation">
-            <div class="container">
+            <div class="nav-inner">
                 <a class="nav-brand" href="#page-top">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.337 0-10 1.671-10 5v2h20v-2c0-3.329-6.663-5-10-5z"/></svg>
-                    <span style="font-weight:400;">Ming</span> Zhou
+                    <span class="light">Ming</span> Zhou
                 </a>
                 <ul class="nav-links">
                     <li><a href="#contact">Contact</a></li>
@@ -303,7 +251,7 @@
             </div>
         </nav>
 
-        <!-- Intro / Hero -->
+        <!-- Hero -->
         <header id="page-top" class="intro">
             <div class="intro-body">
                 <h1 class="brand-heading">Hi 👋</h1>
@@ -314,21 +262,21 @@
             </div>
         </header>
 
-        <!-- Contact Section -->
+        <!-- Contact -->
         <section id="contact">
-            <div style="max-width: 700px; margin: 0 auto;">
+            <div class="contact-wrapper">
                 <h2>Contact Ming Zhou</h2>
                 <p>Feel free to email me for anything, or to just say hello!</p>
                 <p>contact [at] mzhou.me</p>
                 <ul class="social-buttons">
                     <li>
-                        <a href="https://linkedin.com/in/MCZhou" target="_blank" rel="noopener noreferrer">
+                        <a href="https://linkedin.com/in/MCZhou" role="button" class="outline" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                             LinkedIn
                         </a>
                     </li>
                     <li>
-                        <a href="https://github.com/MZhoume" target="_blank" rel="noopener noreferrer">
+                        <a href="https://github.com/MZhoume" role="button" class="outline" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                             GitHub
                         </a>
@@ -339,24 +287,19 @@
 
         <!-- Footer -->
         <footer>
-            <div>
-                <p>Copyright &copy; Ming Zhou <span id="copyright-year"></span></p>
-            </div>
+            <p>Copyright &copy; Ming Zhou <span id="copyright-year"></span></p>
         </footer>
 
         <script>
-            // Dynamic copyright year
             document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
-            // Nav: transparent at page-top on desktop, solid after scrolling (mirrors original grayscale.js behaviour)
+            // Nav: transparent at top on desktop, solid after scrolling past the hero
             (function () {
                 var nav = document.querySelector('.site-nav');
+                var hero = document.querySelector('.intro');
                 function onScroll() {
-                    if (window.scrollY > 50) {
-                        nav.classList.add('scrolled');
-                    } else {
-                        nav.classList.remove('scrolled');
-                    }
+                    var threshold = hero ? hero.offsetHeight - nav.offsetHeight : 0;
+                    nav.classList.toggle('scrolled', window.scrollY > Math.max(0, threshold));
                 }
                 window.addEventListener('scroll', onScroll, { passive: true });
                 onScroll();
