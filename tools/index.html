@@ -5,10 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tools</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        :root {
+            --sidebar-width: 14rem;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        header {
+            grid-column: 2;
+            border-bottom: 1px solid var(--pico-muted-border-color, #d6d6d6);
+            margin: 0;
+        }
+
+        aside {
+            grid-row: 1 / span 2;
+            border-right: 1px solid var(--pico-muted-border-color, #d6d6d6);
+            padding-top: 1rem;
+        }
+
+        aside ul {
+            padding-left: 0;
+        }
+
+        aside li {
+            list-style: none;
+        }
+
+        aside a {
+            display: block;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+        }
+
+        aside a[aria-current="page"] {
+            background-color: var(--pico-primary-background, #0172ad);
+            color: var(--pico-primary-inverse, #ffffff);
+            font-weight: 700;
+        }
+
+        main {
+            grid-column: 2;
+        }
+    </style>
 </head>
 <body>
+    <aside class="container-fluid">
+        <nav aria-label="Tools sidebar">
+            <ul>
+                <li><a href="/tools/" aria-current="page">Welcome</a></li>
+            </ul>
+        </nav>
+    </aside>
     <header class="container-fluid">
-        <h1>Hello Tools</h1>
+        <h1>Welcome</h1>
     </header>
+    <main class="container-fluid">
+        <p>Select a tool from the sidebar to get started.</p>
+    </main>
 </body>
 </html>
