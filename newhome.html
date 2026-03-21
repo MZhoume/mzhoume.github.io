@@ -14,6 +14,11 @@
         <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
         <style>
+            /* Smooth scrolling for anchor links */
+            html {
+                scroll-behavior: smooth;
+            }
+
             :root {
                 --pico-font-family: 'Lora', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                 --pico-font-family-sans-serif: 'Lora', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -26,7 +31,7 @@
                 --pico-secondary-background: transparent;
                 --pico-card-background-color: #111;
                 --pico-card-border-color: rgba(255, 255, 255, 0.1);
-                --pico-nav-background-color: #000;
+                --pico-nav-background-color: transparent;
                 --pico-nav-border-color: rgba(255, 255, 255, 0.3);
             }
 
@@ -43,18 +48,36 @@
                 letter-spacing: 1px;
             }
 
-            /* Navigation */
+            /* Navigation — transparent at page-top on desktop, solid after scrolling */
             nav.site-nav {
                 position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 z-index: 1000;
+                background-color: transparent;
+                border-bottom: none;
+                padding: 1.25rem 0;
+                font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: background-color 0.5s ease-in-out, padding 0.5s ease-in-out, border-bottom-color 0.5s ease-in-out;
+            }
+
+            /* On mobile the nav is always solid (matches original Bootstrap behaviour) */
+            @media (max-width: 767px) {
+                nav.site-nav {
+                    background-color: #000;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                    padding: 0.75rem 0;
+                }
+            }
+
+            /* JS adds .scrolled once the user scrolls past the hero */
+            nav.site-nav.scrolled {
                 background-color: #000;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.3);
                 padding: 0.75rem 0;
-                font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                text-transform: uppercase;
             }
 
             nav.site-nav .container {
@@ -67,6 +90,9 @@
             }
 
             nav.site-nav .nav-brand {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
                 font-weight: 700;
                 font-size: 1rem;
                 color: #fff;
@@ -98,7 +124,8 @@
                 color: rgba(255, 255, 255, 0.8);
             }
 
-            /* Intro / Hero */
+            /* Intro / Hero — use body > header.intro to beat Pico's body > header rule */
+            body > header.intro,
             .intro {
                 display: flex;
                 align-items: center;
@@ -109,6 +136,7 @@
                 background: url('img/intro-bg.jpg') bottom center no-repeat #000;
                 background-size: cover;
                 padding: 6rem 1rem 3rem;
+                margin: 0;
             }
 
             .intro-body {
@@ -120,6 +148,7 @@
             .brand-heading {
                 font-size: 3rem;
                 font-weight: 400;
+                margin-top: 0;
                 margin-bottom: 1rem;
                 color: #fff;
             }
@@ -142,6 +171,12 @@
                 }
             }
 
+            /* Pulse animation — mirrors original fa-angle-double-down animated behaviour */
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50%       { transform: scale(1.2); }
+            }
+
             /* Scroll-down circle button */
             .btn-circle {
                 display: inline-flex;
@@ -151,7 +186,6 @@
                 height: 70px;
                 border: 2px solid #fff;
                 border-radius: 50%;
-                font-size: 2.5rem;
                 color: #fff;
                 background: transparent;
                 text-decoration: none;
@@ -163,6 +197,10 @@
             .btn-circle:hover {
                 background: rgba(255, 255, 255, 0.1);
                 color: #fff;
+            }
+
+            .btn-circle:hover svg {
+                animation: pulse 1.5s linear infinite;
             }
 
             /* Contact Section */
@@ -180,6 +218,7 @@
 
             #contact h2 {
                 color: #fff;
+                margin-top: 0;
                 margin-bottom: 1.5rem;
             }
 
@@ -235,14 +274,14 @@
                 background-color: #42DCA3;
             }
 
-            /* Footer */
-            footer {
+            /* Footer — use body > footer to match Pico's selector specificity */
+            body > footer {
                 padding: 3rem 1rem;
                 text-align: center;
                 background-color: #000;
             }
 
-            footer p {
+            body > footer p {
                 margin: 0;
                 font-size: 0.8125rem;
                 color: #fff;
@@ -255,7 +294,8 @@
         <nav class="site-nav" role="navigation" aria-label="Main navigation">
             <div class="container">
                 <a class="nav-brand" href="#page-top">
-                    👤 <span style="font-weight:400;">Ming</span> Zhou
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.337 0-10 1.671-10 5v2h20v-2c0-3.329-6.663-5-10-5z"/></svg>
+                    <span style="font-weight:400;">Ming</span> Zhou
                 </a>
                 <ul class="nav-links">
                     <li><a href="#contact">Contact</a></li>
@@ -278,7 +318,7 @@
         <section id="contact">
             <div style="max-width: 700px; margin: 0 auto;">
                 <h2>Contact Ming Zhou</h2>
-                <p style="margin-bottom: 0.625rem;">Feel free to email me for anything, or to just say hello!</p>
+                <p>Feel free to email me for anything, or to just say hello!</p>
                 <p>contact [at] mzhou.me</p>
                 <ul class="social-buttons">
                     <li>
@@ -305,7 +345,22 @@
         </footer>
 
         <script>
+            // Dynamic copyright year
             document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+            // Nav: transparent at page-top on desktop, solid after scrolling (mirrors original grayscale.js behaviour)
+            (function () {
+                var nav = document.querySelector('.site-nav');
+                function onScroll() {
+                    if (window.scrollY > 50) {
+                        nav.classList.add('scrolled');
+                    } else {
+                        nav.classList.remove('scrolled');
+                    }
+                }
+                window.addEventListener('scroll', onScroll, { passive: true });
+                onScroll();
+            }());
         </script>
     </body>
 </html>
