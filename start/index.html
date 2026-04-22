@@ -9,7 +9,6 @@
     <title>Start</title>
     <style>
       :root {
-        --viewport-height: 100dvh;
         --color-text: #16222f;
         --color-border: rgb(22 34 47 / 14%);
         --color-placeholder: rgb(22 34 47 / 50%);
@@ -19,12 +18,11 @@
         --page-background-tint: var(--color-bg);
         --page-background-image: none;
         --bookmark-title-color: var(--color-text);
-        --page-top-space: 30dvh;
+        --page-top-space: clamp(96px, 24dvh, 220px);
         --color-surface: rgb(248 250 253 / 78%);
         --color-surface-strong: rgb(251 253 255 / 86%);
         --color-surface-muted: rgb(231 238 245 / 78%);
         --color-error: #a85149;
-        --color-shadow: rgb(15 23 42 / 18%);
         --color-accent: #2d678b;
         --color-on-accent: #f7fbff;
         --color-danger: #b45a52;
@@ -56,7 +54,6 @@
           --color-surface-strong: rgb(19 29 43 / 86%);
           --color-surface-muted: rgb(28 40 58 / 74%);
           --color-error: #f1a098;
-          --color-shadow: rgb(0 0 0 / 34%);
           --color-accent: #5f98c2;
           --color-on-accent: #08131b;
           --color-danger: #f0a298;
@@ -104,7 +101,7 @@
       }
 
       body {
-        min-height: var(--viewport-height);
+        min-height: 100dvh;
         position: relative;
         overflow: hidden;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -125,8 +122,7 @@
 
       .page-shell {
         width: 100%;
-        min-height: var(--viewport-height);
-        height: var(--viewport-height);
+        height: 100dvh;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -148,7 +144,6 @@
         margin-top: 20px;
       }
 
-      .bookmarks-edit-button,
       .bookmark-icon-wrap,
       .bookmark-text-input,
       .omnibox-input {
@@ -229,6 +224,8 @@
         padding: 0 16px;
         cursor: pointer;
         box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(var(--blur-strong));
+        -webkit-backdrop-filter: blur(var(--blur-strong));
       }
 
       .bookmarks-edit-button::before {
@@ -252,11 +249,6 @@
 
       .bookmarks-edit-button.is-active::before {
         content: "✓";
-      }
-
-      .bookmarks-edit-button {
-        backdrop-filter: blur(var(--blur-strong));
-        -webkit-backdrop-filter: blur(var(--blur-strong));
       }
 
       .bookmarks-grid {
@@ -1004,31 +996,23 @@
         const prefersDark =
           window.matchMedia &&
           window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const targetRgb = prefersDark ? [23, 33, 47] : [228, 235, 241];
-        const softenedRgb = tintRgb.map(function (channel, index) {
-          return mixChannel(
-            channel,
-            targetRgb[index],
-            prefersDark ? 0.88 : 0.9,
-          );
-        });
 
         return {
           bookmarkTitle:
             "rgb(" +
-            invertRgb(softenedRgb).join(" ") +
+            invertRgb(tintRgb).join(" ") +
             " / " +
             (prefersDark ? "94%" : "90%") +
             ")",
           tint:
             "rgb(" +
-            softenedRgb.join(" ") +
+            tintRgb.join(" ") +
             " / " +
             (prefersDark ? "62%" : "58%") +
             ")",
           overlay:
             "rgb(" +
-            softenedRgb.join(" ") +
+            tintRgb.join(" ") +
             " / " +
             (prefersDark ? "10%" : "6%") +
             ")",
@@ -1174,66 +1158,6 @@
         return DOMAIN_LIKE_PATTERN.test(value);
       }
 
-      function getViewportHeight() {
-        if (window.visualViewport && window.visualViewport.height) {
-          return window.visualViewport.height;
-        }
-
-        return window.innerHeight;
-      }
-
-      function syncViewportLayout() {
-        const viewportHeight = getViewportHeight();
-        const topSpace = Math.max(96, Math.min(viewportHeight * 0.3, 280));
-
-        document.documentElement.style.setProperty(
-          "--viewport-height",
-          viewportHeight + "px",
-        );
-        document.documentElement.style.setProperty(
-          "--page-top-space",
-          topSpace + "px",
-        );
-      }
-
-      function keepFocusedFieldVisible() {
-        const activeElement = document.activeElement;
-
-        if (!(activeElement instanceof HTMLElement)) {
-          return;
-        }
-
-        if (!activeElement.matches(".omnibox-input, .bookmark-text-input")) {
-          return;
-        }
-
-        window.requestAnimationFrame(function () {
-          activeElement.scrollIntoView({
-            block: "nearest",
-            inline: "nearest",
-          });
-        });
-      }
-
-      function handleViewportChange() {
-        syncViewportLayout();
-        resizeOmniboxInput();
-        keepFocusedFieldVisible();
-      }
-
-      function bindViewportListeners() {
-        handleViewportChange();
-        window.addEventListener("resize", handleViewportChange);
-        window.addEventListener("orientationchange", handleViewportChange);
-
-        if (!window.visualViewport) {
-          return;
-        }
-
-        window.visualViewport.addEventListener("resize", handleViewportChange);
-        window.visualViewport.addEventListener("scroll", handleViewportChange);
-      }
-
       // Omnibox
       function resolveDestination(rawValue) {
         const value = rawValue.trim();
@@ -1265,11 +1189,20 @@
       }
 
       function resizeOmniboxInput() {
-        const maxHeight = getViewportHeight() * 0.45;
+        const maxHeight = window.innerHeight * 0.45;
 
         omniboxInput.style.height = "auto";
         omniboxInput.style.height =
           Math.min(omniboxInput.scrollHeight, maxHeight) + "px";
+      }
+
+      function handleOmniboxKeyDown(event) {
+        if (event.key !== "Enter" || event.isComposing) {
+          return;
+        }
+
+        event.preventDefault();
+        startForm.requestSubmit();
       }
 
       function normalizeBookmarkUrl(rawValue) {
@@ -1336,7 +1269,6 @@
         bookmarkDialog.showModal();
         bookmarkUrlInput.focus();
         bookmarkUrlInput.select();
-        keepFocusedFieldVisible();
       }
 
       function handleBookmarkDialogInput() {
@@ -1371,21 +1303,19 @@
 
       function loadBookmarks() {
         const parsed = readJsonStorage(BOOKMARKS_STORAGE_KEY);
-        if (!Array.isArray(parsed)) {
-          return [];
-        }
-
-        return parsed
-          .filter(function (item) {
-            return (
-              item &&
-              typeof item.id === "string" &&
-              typeof item.title === "string" &&
-              typeof item.url === "string" &&
-              isHttpUrl(item.url)
-            );
-          })
-          .map(normalizeBookmark);
+        return Array.isArray(parsed)
+          ? parsed
+              .filter(function (item) {
+                return (
+                  item &&
+                  typeof item.id === "string" &&
+                  typeof item.title === "string" &&
+                  typeof item.url === "string" &&
+                  isHttpUrl(item.url)
+                );
+              })
+              .map(normalizeBookmark)
+          : [];
       }
 
       function saveBookmarks(bookmarks) {
@@ -1770,8 +1700,6 @@
       }
 
       function renderBookmarks() {
-        bookmarksGrid.innerHTML = "";
-
         const fragment = document.createDocumentFragment();
 
         bookmarksState.forEach(function (bookmark) {
@@ -1782,7 +1710,7 @@
           fragment.appendChild(renderAddTile());
         }
 
-        bookmarksGrid.appendChild(fragment);
+        bookmarksGrid.replaceChildren(fragment);
       }
 
       function removeBookmark(bookmarkId) {
@@ -1812,20 +1740,13 @@
       async function applyBingBackground() {
         const cachedEntry = readBingCacheEntry();
         const now = Date.now();
+        const hasFreshCache =
+          cachedEntry && now - cachedEntry.fetchedAt < BING_CACHE_TTL_MS;
 
-        let backgroundUrl = null;
-        let tintRgb = null;
-
-        if (cachedEntry && now - cachedEntry.fetchedAt < BING_CACHE_TTL_MS) {
-          backgroundUrl = cachedEntry.url;
-          tintRgb = cachedEntry.tint;
-        } else {
-          backgroundUrl = await fetchBingBackgroundUrl();
-
-          if (!backgroundUrl) {
-            return;
-          }
-        }
+        const backgroundUrl = hasFreshCache
+          ? cachedEntry.url
+          : await fetchBingBackgroundUrl();
+        let tintRgb = hasFreshCache ? cachedEntry.tint : null;
 
         if (!backgroundUrl) {
           return;
@@ -1878,12 +1799,12 @@
           window.matchMedia("(prefers-color-scheme: dark)");
 
         setBookmarksState(loadBookmarks());
-        bindViewportListeners();
+        resizeOmniboxInput();
         bookmarksEditMode = false;
         syncBookmarksEditButton();
         bookmarksEditButton.addEventListener("click", toggleBookmarksEditMode);
         omniboxInput.addEventListener("input", resizeOmniboxInput);
-        omniboxInput.addEventListener("focus", keepFocusedFieldVisible);
+        omniboxInput.addEventListener("keydown", handleOmniboxKeyDown);
         bookmarkDialogCancelButton.addEventListener(
           "click",
           closeBookmarkDialog,
@@ -1894,8 +1815,6 @@
         });
         bookmarkUrlInput.addEventListener("input", handleBookmarkDialogInput);
         bookmarkTitleInput.addEventListener("input", handleBookmarkDialogInput);
-        bookmarkUrlInput.addEventListener("focus", keepFocusedFieldVisible);
-        bookmarkTitleInput.addEventListener("focus", keepFocusedFieldVisible);
         bookmarkDialogForm.addEventListener(
           "submit",
           handleBookmarkDialogSubmit,
