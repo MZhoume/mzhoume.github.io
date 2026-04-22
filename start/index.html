@@ -997,8 +997,9 @@
             backgroundUrl = cachedData.url;
           } else {
             const proxyUrl =
-              "https://corsproxy.io/?url=" + encodeURIComponent(BING_API_URL);
-            const data = await fetchJsonWithTimeout(proxyUrl, 4000);
+              "https://api.allorigins.win/raw?url=" +
+              encodeURIComponent(BING_API_URL);
+            const data = await fetchJsonWithTimeout(proxyUrl, 10000);
             const imagePath = data?.images?.[0]?.url;
 
             if (typeof imagePath !== "string" || imagePath.length === 0) {
