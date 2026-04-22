@@ -9,61 +9,52 @@
     <title>Start</title>
     <style>
       :root {
-        --color-text: #16222f;
-        --color-border: rgb(22 34 47 / 14%);
-        --color-placeholder: rgb(22 34 47 / 50%);
-        --color-focus: #3f84bb;
-        --color-focus-ring: rgb(63 132 187 / 20%);
-        --color-bg: rgb(240 244 248 / 66%);
-        --page-background-tint: var(--color-bg);
+        color-scheme: light dark;
+        --color-text-rgb: 22 34 47;
+        --color-focus-rgb: 63 132 187;
+        --color-bg-rgb: 240 244 248;
+        --color-surface-rgb: 248 250 253;
+        --color-surface-strong-rgb: 251 253 255;
+        --color-accent-rgb: 45 103 139;
+        --color-danger-rgb: 180 90 82;
+        --color-bookmark-soften-target-rgb: 233 239 245;
+        --alpha-faint: 10%;
+        --alpha-soft: 20%;
+        --alpha-glass: 40%;
+        --alpha-surface: 60%;
+        --color-text: rgb(var(--color-text-rgb));
+        --page-background-tint: rgb(var(--color-bg-rgb) / var(--alpha-glass));
         --page-background-image: none;
         --bookmark-title-color: var(--color-text);
-        --page-top-space: clamp(96px, 24dvh, 220px);
-        --color-surface: rgb(248 250 253 / 78%);
-        --color-surface-strong: rgb(251 253 255 / 86%);
-        --color-surface-muted: rgb(231 238 245 / 78%);
-        --color-error: #a85149;
-        --color-accent: #2d678b;
         --color-on-accent: #f7fbff;
-        --color-danger: #b45a52;
-        --color-danger-soft: rgb(180 90 82 / 16%);
-        --color-danger-border: rgb(180 90 82 / 24%);
-        --color-on-danger: #fff;
+        --color-danger-foreground: #ffe5e1;
         --radius-pill: 999px;
         --radius-card: 24px;
         --blur-soft: 6px;
-        --blur-strong: 10px;
-        --shadow-soft: 0 12px 28px rgb(15 23 42 / 12%);
-        --shadow-soft-hover: 0 16px 34px rgb(15 23 42 / 16%);
-        --shadow-strong: 0 18px 38px rgb(15 23 42 / 22%);
-        --shadow-accent: 0 18px 36px rgb(45 103 139 / 24%);
+        --shadow-soft: 0 12px 28px rgb(15 23 42 / 10%);
+        --shadow-soft-hover: 0 16px 34px rgb(15 23 42 / 20%);
+        --shadow-accent: 0 18px 36px rgb(var(--color-accent-rgb) / 30%);
       }
 
       @media (prefers-color-scheme: dark) {
         :root {
-          --color-text: #e9eff6;
-          --color-border: rgb(226 232 240 / 16%);
-          --color-placeholder: rgb(226 232 240 / 52%);
-          --color-focus: #6faed7;
-          --color-focus-ring: rgb(111 174 215 / 26%);
-          --color-bg: rgb(12 19 29 / 54%);
-          --page-background-tint: var(--color-bg);
-          --page-background-image: none;
-          --bookmark-title-color: var(--color-text);
-          --color-surface: rgb(15 24 36 / 78%);
-          --color-surface-strong: rgb(19 29 43 / 86%);
-          --color-surface-muted: rgb(28 40 58 / 74%);
-          --color-error: #f1a098;
-          --color-accent: #5f98c2;
+          --color-text-rgb: 233 239 246;
+          --color-focus-rgb: 111 174 215;
+          --color-bg-rgb: 12 19 29;
+          --color-surface-rgb: 15 24 36;
+          --color-surface-strong-rgb: 19 29 43;
+          --color-accent-rgb: 95 152 194;
+          --color-danger-rgb: 240 162 152;
+          --color-bookmark-soften-target-rgb: 30 41 56;
           --color-on-accent: #08131b;
-          --color-danger: #f0a298;
-          --color-danger-soft: rgb(240 162 152 / 18%);
-          --color-danger-border: rgb(240 162 152 / 28%);
-          --color-on-danger: #101418;
-          --shadow-soft: 0 14px 32px rgb(0 0 0 / 24%);
-          --shadow-soft-hover: 0 18px 38px rgb(0 0 0 / 28%);
-          --shadow-strong: 0 20px 42px rgb(0 0 0 / 36%);
-          --shadow-accent: 0 20px 38px rgb(95 152 194 / 24%);
+          --color-danger-foreground: #7f312b;
+          --shadow-soft: 0 14px 32px rgb(0 0 0 / 10%);
+          --shadow-soft-hover: 0 18px 38px rgb(0 0 0 / 20%);
+          --shadow-accent: 0 20px 38px rgb(var(--color-accent-rgb) / 30%);
+        }
+
+        .bookmark-dialog {
+          box-shadow: 0 20px 42px rgb(0 0 0 / 20%);
         }
       }
 
@@ -79,6 +70,7 @@
         padding: 0;
         margin: -1px;
         overflow: hidden;
+        clip-path: inset(50%);
         clip: rect(0, 0, 0, 0);
         white-space: nowrap;
         border: 0;
@@ -127,7 +119,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding: var(--page-top-space) 32px
+        padding: clamp(96px, 24dvh, 220px) 32px
           calc(32px + env(safe-area-inset-bottom));
         overflow-y: auto;
         overflow-x: hidden;
@@ -158,23 +150,27 @@
         place-items: center;
       }
 
-      .bookmarks-edit-button,
-      .bookmark-dialog-button,
-      .bookmark-text-input,
-      .omnibox-input {
-        border: 1px solid var(--color-border);
+      :is(
+        .bookmarks-edit-button,
+        .bookmark-dialog-button,
+        .bookmark-text-input,
+        .omnibox-input
+      ) {
+        border: 1px solid rgb(var(--color-text-rgb) / var(--alpha-faint));
         color: var(--color-text);
-        background: var(--color-surface-strong);
+        background: rgb(var(--color-surface-strong-rgb) / var(--alpha-surface));
       }
 
-      .bookmarks-edit-button,
-      .bookmark-dialog-button,
-      .omnibox-submit,
-      .bookmark-remove,
-      .bookmark-link,
-      .bookmark-add,
-      .bookmark-text-input,
-      .omnibox-input {
+      :is(
+        .bookmarks-edit-button,
+        .bookmark-dialog-button,
+        .omnibox-submit,
+        .bookmark-remove,
+        .bookmark-link,
+        .bookmark-add,
+        .bookmark-text-input,
+        .omnibox-input
+      ) {
         transition:
           background-color 120ms ease,
           border-color 120ms ease,
@@ -183,35 +179,41 @@
           transform 120ms ease;
       }
 
-      .bookmarks-edit-button:focus-visible,
-      .bookmark-remove:focus-visible,
-      .bookmark-link:focus-visible,
-      .bookmark-add:focus-visible,
-      .bookmark-text-input:focus-visible,
-      .bookmark-dialog-button:focus-visible,
-      .omnibox-submit:focus-visible {
-        outline: 2px solid var(--color-focus);
+      :is(
+        .bookmarks-edit-button,
+        .bookmark-remove,
+        .bookmark-link,
+        .bookmark-add,
+        .bookmark-text-input,
+        .bookmark-dialog-button,
+        .omnibox-submit
+      ):focus-visible {
+        outline: 2px solid rgb(var(--color-focus-rgb));
         outline-offset: 2px;
       }
 
-      .bookmark-link:focus-visible .bookmark-icon-wrap,
-      .bookmark-add:focus-visible .bookmark-icon-wrap,
-      .bookmarks-edit-button:focus-visible,
-      .bookmark-dialog-button:focus-visible,
-      .bookmark-text-input:focus-visible,
-      .omnibox-submit:focus-visible {
+      :is(
+        .bookmark-link:focus-visible .bookmark-icon-wrap,
+        .bookmark-add:focus-visible .bookmark-icon-wrap,
+        .bookmarks-edit-button:focus-visible,
+        .bookmark-dialog-button:focus-visible,
+        .bookmark-text-input:focus-visible,
+        .omnibox-submit:focus-visible
+      ) {
         box-shadow:
-          0 0 0 4px var(--color-focus-ring),
+          0 0 0 4px rgb(var(--color-focus-rgb) / var(--alpha-soft)),
           var(--shadow-soft);
       }
 
       .bookmarks-header {
         display: flex;
         justify-content: center;
+        gap: 10px;
         margin-top: 14px;
       }
 
-      .bookmarks-edit-button {
+      .bookmarks-edit-button,
+      .bookmarks-reset-button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -224,8 +226,9 @@
         padding: 0 16px;
         cursor: pointer;
         box-shadow: var(--shadow-soft);
-        backdrop-filter: blur(var(--blur-strong));
-        -webkit-backdrop-filter: blur(var(--blur-strong));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background: rgb(var(--color-surface-strong-rgb) / var(--alpha-glass));
       }
 
       .bookmarks-edit-button::before {
@@ -241,14 +244,24 @@
       }
 
       .bookmarks-edit-button.is-active {
-        border-color: transparent;
-        background: var(--color-accent);
+        border-color: rgb(var(--color-accent-rgb) / var(--alpha-soft));
+        background: rgb(var(--color-accent-rgb) / var(--alpha-glass));
         color: var(--color-on-accent);
         box-shadow: var(--shadow-accent);
       }
 
       .bookmarks-edit-button.is-active::before {
         content: "✓";
+      }
+
+      .bookmarks-reset-button {
+        border: 1px solid rgb(var(--color-danger-rgb) / 24%);
+        background: rgb(var(--color-danger-rgb) / var(--alpha-surface));
+        color: var(--color-danger-foreground);
+      }
+
+      .bookmarks-reset-button[hidden] {
+        display: none;
       }
 
       .bookmarks-grid {
@@ -280,7 +293,10 @@
         width: 72px;
         height: 72px;
         border-radius: var(--radius-card);
-        background-color: var(--bookmark-background-tint, var(--color-surface));
+        background-color: var(
+          --bookmark-background-tint,
+          rgb(var(--color-surface-rgb) / var(--alpha-glass))
+        );
         transition: background-color 120ms ease;
       }
 
@@ -314,15 +330,15 @@
 
       .bookmark-remove {
         position: absolute;
-        top: 0px;
+        top: 0;
         left: calc(50% + 36px);
         width: 20px;
         height: 20px;
         padding: 0;
-        border: 1px solid var(--color-danger-border);
+        border: 1px solid rgb(var(--color-danger-rgb) / 24%);
         border-radius: 50%;
-        background: var(--color-danger-soft);
-        color: var(--color-danger);
+        background: rgb(var(--color-danger-rgb) / var(--alpha-surface));
+        color: var(--color-danger-foreground);
         font-size: 18px;
         font-weight: 700;
         line-height: 0;
@@ -334,15 +350,15 @@
       .bookmark-dialog {
         width: min(100%, 420px);
         padding: 0;
-        border: 1px solid var(--color-border);
+        border: 1px solid rgb(var(--color-text-rgb) / var(--alpha-faint));
         border-radius: var(--radius-card);
         color: var(--color-text);
-        background: var(--color-surface);
-        box-shadow: var(--shadow-strong);
+        background: rgb(var(--color-surface-rgb) / var(--alpha-glass));
+        box-shadow: 0 18px 38px rgb(15 23 42 / 20%);
       }
 
       .bookmark-dialog::backdrop {
-        background: rgb(0 0 0 / 35%);
+        background: rgb(0 0 0 / 30%);
         backdrop-filter: blur(var(--blur-soft));
         -webkit-backdrop-filter: blur(var(--blur-soft));
       }
@@ -371,6 +387,7 @@
       .bookmark-text-input {
         width: 100%;
         min-height: 44px;
+        background: rgb(var(--color-surface-strong-rgb) / var(--alpha-surface));
         border-radius: 14px;
         padding: 10px 14px;
       }
@@ -380,7 +397,7 @@
         font-size: 13px;
         font-weight: 600;
         min-height: 1em;
-        color: var(--color-error);
+        color: rgb(var(--color-danger-rgb));
       }
 
       .bookmark-dialog-actions {
@@ -398,12 +415,12 @@
       }
 
       .bookmark-dialog-button[data-variant="secondary"] {
-        background: var(--color-surface-muted);
+        background: rgb(var(--color-surface-strong-rgb) / var(--alpha-surface));
       }
 
       .bookmark-dialog-button[data-variant="primary"] {
         border-color: transparent;
-        background: var(--color-accent);
+        background: rgb(var(--color-accent-rgb));
         color: var(--color-on-accent);
         box-shadow: var(--shadow-accent);
       }
@@ -416,6 +433,7 @@
         width: 100%;
         min-height: 48px;
         max-height: min(45dvh, 240px);
+        background: rgb(var(--color-surface-rgb) / var(--alpha-glass));
         border-radius: var(--radius-card);
         padding: 12px 72px 12px 24px;
         font-size: 18px;
@@ -425,19 +443,19 @@
       }
 
       .omnibox-input::placeholder {
-        color: var(--color-placeholder);
+        color: rgb(var(--color-text-rgb) / 50%);
       }
 
       .omnibox-input:focus {
-        border-color: var(--color-focus);
+        border-color: rgb(var(--color-focus-rgb));
         box-shadow:
-          0 0 0 4px var(--color-focus-ring),
+          0 0 0 4px rgb(var(--color-focus-rgb) / var(--alpha-soft)),
           var(--shadow-soft-hover);
         outline: none;
       }
 
       .omnibox-input:focus-visible {
-        outline: 2px solid var(--color-focus);
+        outline: 2px solid rgb(var(--color-focus-rgb));
         outline-offset: -2px;
       }
 
@@ -447,9 +465,9 @@
         bottom: 7px;
         width: 42px;
         height: 42px;
-        border: 1px solid var(--color-border);
+        border: 1px solid rgb(var(--color-text-rgb) / var(--alpha-faint));
         border-radius: 21px;
-        background: var(--color-surface-muted);
+        background: rgb(var(--color-surface-rgb) / var(--alpha-glass));
         box-shadow: var(--shadow-soft);
         color: var(--color-text);
         cursor: pointer;
@@ -534,6 +552,14 @@
           >
             Edit
           </button>
+          <button
+            id="bookmarksResetButton"
+            class="bookmarks-reset-button"
+            type="button"
+            hidden
+          >
+            Reset
+          </button>
         </div>
       </section>
     </main>
@@ -606,6 +632,9 @@
       const bookmarksEditButton = document.getElementById(
         "bookmarksEditButton",
       );
+      const bookmarksResetButton = document.getElementById(
+        "bookmarksResetButton",
+      );
       const bookmarkDialog = document.getElementById("bookmarkDialog");
       const bookmarkDialogForm = document.getElementById("bookmarkDialogForm");
       const bookmarkDialogCancelButton = document.getElementById(
@@ -653,6 +682,10 @@
 
       function persistBookmarksState() {
         saveBookmarks(bookmarksState);
+      }
+
+      function clearStartPageStorage() {
+        localStorage.clear();
       }
 
       // Favicon cache
@@ -707,6 +740,32 @@
         return rgb.map(function (channel) {
           return clampByte(255 - channel);
         });
+      }
+
+      function prefersDarkMode() {
+        return (
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+        );
+      }
+
+      function readCssRgbTriplet(propertyName) {
+        const value = getComputedStyle(document.documentElement)
+          .getPropertyValue(propertyName)
+          .trim();
+
+        if (!value) {
+          return null;
+        }
+
+        const rgb = value
+          .split(/\s+/)
+          .slice(0, 3)
+          .map(function (channel) {
+            return Number(channel);
+          });
+
+        return rgb.length === 3 && rgb.every(Number.isFinite) ? rgb : null;
       }
 
       function readCachedTintRgb(value) {
@@ -783,8 +842,15 @@
         return normalized;
       }
 
+      function getBookmarkFaviconData(bookmark) {
+        return bookmark?.favicon || null;
+      }
+
       function ensureBookmarkFaviconData(bookmark) {
-        bookmark.favicon = normalizeBookmarkFaviconData(bookmark.favicon);
+        if (!bookmark.favicon) {
+          bookmark.favicon = normalizeBookmarkFaviconData(null);
+        }
+
         return bookmark.favicon;
       }
 
@@ -793,20 +859,21 @@
           return null;
         }
 
-        const faviconData = ensureBookmarkFaviconData(bookmark);
+        const faviconData = getBookmarkFaviconData(bookmark);
+
+        if (!faviconData) {
+          return null;
+        }
+
         const entry = faviconData.tints[source];
 
         if (!entry) {
           return null;
         }
 
-        if (Date.now() - entry.timestamp < FAVICON_TINT_TTL_MS) {
-          return entry.tint;
-        }
-
-        delete faviconData.tints[source];
-        persistBookmarksState();
-        return null;
+        return Date.now() - entry.timestamp < FAVICON_TINT_TTL_MS
+          ? entry.tint
+          : null;
       }
 
       function rememberFaviconTint(bookmark, source, tintRgb) {
@@ -839,8 +906,8 @@
       }
 
       function getLastSuccessfulFaviconSource(bookmark) {
-        const faviconData = ensureBookmarkFaviconData(bookmark);
-        return faviconData.lastSuccessfulSource || null;
+        const faviconData = getBookmarkFaviconData(bookmark);
+        return faviconData ? faviconData.lastSuccessfulSource || null : null;
       }
 
       function refreshBookmarkIconTints() {
@@ -881,20 +948,19 @@
           return false;
         }
 
-        const faviconData = ensureBookmarkFaviconData(bookmark);
+        const faviconData = getBookmarkFaviconData(bookmark);
+
+        if (!faviconData) {
+          return false;
+        }
+
         const timestamp = faviconData.failures[source];
 
         if (!timestamp) {
           return false;
         }
 
-        if (Date.now() - timestamp < FAVICON_FAILURE_TTL_MS) {
-          return true;
-        }
-
-        delete faviconData.failures[source];
-        persistBookmarksState();
-        return false;
+        return Date.now() - timestamp < FAVICON_FAILURE_TTL_MS;
       }
 
       function rememberFaviconFailure(bookmark, source) {
@@ -935,6 +1001,10 @@
       // Network and proxy payload helpers
       function buildProxyUrl(urlValue) {
         return REMOTE_ASSET_PROXY_URL + encodeURIComponent(urlValue);
+      }
+
+      function getRemoteAssetAttempts(urlValue) {
+        return [urlValue, buildProxyUrl(urlValue)];
       }
 
       async function fetchJsonWithTimeout(url, timeoutMs) {
@@ -993,9 +1063,7 @@
       }
 
       function getThemeTintPalette(tintRgb) {
-        const prefersDark =
-          window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const prefersDark = prefersDarkMode();
 
         return {
           bookmarkTitle:
@@ -1008,7 +1076,7 @@
             "rgb(" +
             tintRgb.join(" ") +
             " / " +
-            (prefersDark ? "62%" : "58%") +
+            (prefersDark ? "46%" : "42%") +
             ")",
           overlay:
             "rgb(" +
@@ -1101,44 +1169,42 @@
         applyBackgroundTheme(cachedEntry.url, cachedEntry.tint);
       }
 
-      async function calculateBackgroundTint(urlValue) {
-        if (!fastAverageColor) {
-          throw new Error("fast-average-color is unavailable");
-        }
+      function resetBackgroundTheme() {
+        const rootStyle = document.documentElement.style;
 
-        const attempts = [urlValue, buildProxyUrl(urlValue)];
-
-        for (const attempt of attempts) {
-          try {
-            const color = await fastAverageColor.getColorAsync(attempt, {
-              algorithm: "dominant",
-              crossOrigin: "anonymous",
-              silent: true,
-            });
-
-            if (color?.error) {
-              continue;
-            }
-
-            const tintRgb = readCachedTintRgb(color?.value);
-
-            if (tintRgb) {
-              return tintRgb;
-            }
-          } catch {
-            // try next attempt
-          }
-        }
-
-        throw new Error("Background tint could not be derived");
+        rootStyle.removeProperty("--page-background-tint");
+        rootStyle.removeProperty("--page-background-image");
+        rootStyle.removeProperty("--bookmark-title-color");
       }
 
-      async function tryCalculateBackgroundTint(urlValue) {
+      async function readAverageColorRgb(urlValue) {
+        if (!fastAverageColor) {
+          return null;
+        }
+
         try {
-          return await calculateBackgroundTint(urlValue);
+          const color = await fastAverageColor.getColorAsync(urlValue, {
+            algorithm: "dominant",
+            crossOrigin: "anonymous",
+            silent: true,
+          });
+
+          return color?.error ? null : readCachedTintRgb(color?.value);
         } catch {
           return null;
         }
+      }
+
+      async function calculateRemoteTint(urlValue) {
+        for (const attempt of getRemoteAssetAttempts(urlValue)) {
+          const tintRgb = await readAverageColorRgb(attempt);
+
+          if (tintRgb) {
+            return tintRgb;
+          }
+        }
+
+        return null;
       }
 
       function isHttpUrl(value) {
@@ -1257,7 +1323,10 @@
       }
 
       function closeBookmarkDialog() {
-        bookmarkDialog.close();
+        if (bookmarkDialog.open) {
+          bookmarkDialog.close();
+        }
+
         setBookmarkDialogError("");
         bookmarkDialogForm.reset();
       }
@@ -1323,12 +1392,13 @@
       }
 
       function setBookmarksState(bookmarks) {
-        bookmarksState = bookmarks;
+        bookmarksState = bookmarks.map(normalizeBookmark);
       }
 
       function commitBookmarks(bookmarks) {
-        setBookmarksState(bookmarks);
-        saveBookmarks(bookmarks);
+        const normalizedBookmarks = bookmarks.map(normalizeBookmark);
+        bookmarksState = normalizedBookmarks;
+        saveBookmarks(normalizedBookmarks);
       }
 
       function getFaviconCandidates(urlValue) {
@@ -1381,10 +1451,10 @@
       }
 
       function getBookmarkIconTintColor(tintRgb) {
-        const prefersDark =
-          window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const targetRgb = prefersDark ? [30, 41, 56] : [233, 239, 245];
+        const prefersDark = prefersDarkMode();
+        const targetRgb =
+          readCssRgbTriplet("--color-bookmark-soften-target-rgb") ||
+          (prefersDark ? [30, 41, 56] : [233, 239, 245]);
         const softenedRgb = tintRgb.map(function (channel, index) {
           return mixChannel(
             channel,
@@ -1393,13 +1463,7 @@
           );
         });
 
-        return (
-          "rgb(" +
-          softenedRgb.join(" ") +
-          " / " +
-          (prefersDark ? "56%" : "68%") +
-          ")"
-        );
+        return "rgb(" + softenedRgb.join(" ") + " / " + "40%" + ")";
       }
 
       function setBookmarkIconTint(iconWrapElement, tintRgb) {
@@ -1428,69 +1492,6 @@
         setBookmarkIconTint(iconWrapElement, FALLBACK_ICON_TINT_RGB);
       }
 
-      function createBookmarkFaviconController(
-        imgElement,
-        iconWrapElement,
-        bookmark,
-      ) {
-        return {
-          imgElement: imgElement,
-          iconWrapElement: iconWrapElement,
-          bookmark: bookmark,
-          sources: getAvailableFaviconSources(
-            bookmark,
-            getLastSuccessfulFaviconSource(bookmark),
-          ),
-          sourceIndex: 0,
-          currentSource: null,
-          tintRequestId: 0,
-          triedSavedFallback: false,
-        };
-      }
-
-      function removeBookmarkFaviconListeners(
-        controller,
-        handleLoad,
-        handleError,
-      ) {
-        controller.imgElement.removeEventListener("load", handleLoad);
-        controller.imgElement.removeEventListener("error", handleError);
-      }
-
-      function setBookmarkFaviconSource(controller, source) {
-        controller.currentSource = source;
-        controller.imgElement.dataset.source = source || "";
-
-        if (source) {
-          controller.imgElement.src = source;
-        }
-      }
-
-      function getNextBookmarkFaviconSource(controller) {
-        if (controller.sourceIndex < controller.sources.length) {
-          const nextSource = controller.sources[controller.sourceIndex];
-          controller.sourceIndex += 1;
-          return nextSource;
-        }
-
-        if (!controller.triedSavedFallback) {
-          const lastSuccessfulSource = getLastSuccessfulFaviconSource(
-            controller.bookmark,
-          );
-
-          controller.triedSavedFallback = true;
-
-          if (
-            lastSuccessfulSource &&
-            lastSuccessfulSource !== controller.currentSource
-          ) {
-            return lastSuccessfulSource;
-          }
-        }
-
-        return null;
-      }
-
       async function calculateBookmarkFaviconTint(bookmark, source) {
         if (!fastAverageColor || !source) {
           return null;
@@ -1502,28 +1503,12 @@
           return cachedTint;
         }
 
-        const attempts = [source, buildProxyUrl(source)];
+        for (const attempt of getRemoteAssetAttempts(source)) {
+          const tintRgb = await readAverageColorRgb(attempt);
 
-        for (const attempt of attempts) {
-          try {
-            const color = await fastAverageColor.getColorAsync(attempt, {
-              algorithm: "dominant",
-              crossOrigin: "anonymous",
-              silent: true,
-            });
-
-            if (color?.error) {
-              continue;
-            }
-
-            const tintRgb = readCachedTintRgb(color?.value);
-
-            if (tintRgb) {
-              rememberFaviconTint(bookmark, source, tintRgb);
-              return tintRgb;
-            }
-          } catch {
-            // try next attempt
+          if (tintRgb) {
+            rememberFaviconTint(bookmark, source, tintRgb);
+            return tintRgb;
           }
         }
 
@@ -1569,55 +1554,56 @@
         }
       }
 
-      function handleBookmarkFaviconLoad(controller, handleLoad, handleError) {
-        clearFaviconFailure(controller.bookmark, controller.currentSource);
-        rememberSuccessfulFaviconSource(
-          controller.bookmark,
-          controller.currentSource,
+      function applyBookmarkFavicon(imgElement, iconWrapElement, bookmark) {
+        const controller = {
+          bookmark: bookmark,
+          imgElement: imgElement,
+          iconWrapElement: iconWrapElement,
+          tintRequestId: 0,
+        };
+        const sources = getAvailableFaviconSources(
+          bookmark,
+          getLastSuccessfulFaviconSource(bookmark),
         );
-        controller.imgElement.dataset.source = controller.currentSource || "";
-        updateBookmarkFaviconTint(controller, controller.currentSource);
-        removeBookmarkFaviconListeners(controller, handleLoad, handleError);
-      }
+        let sourceIndex = 0;
 
-      function handleBookmarkFaviconError(controller, handleLoad, handleError) {
-        rememberFaviconFailure(controller.bookmark, controller.currentSource);
-
-        const nextSource = getNextBookmarkFaviconSource(controller);
-
-        if (nextSource) {
-          setBookmarkFaviconSource(controller, nextSource);
-          return;
+        function removeListeners() {
+          imgElement.removeEventListener("load", handleLoad);
+          imgElement.removeEventListener("error", handleError);
         }
 
-        controller.currentSource = null;
-        applyBookmarkFallbackIcon(
-          controller.imgElement,
-          controller.iconWrapElement,
-          controller.bookmark,
-        );
-        removeBookmarkFaviconListeners(controller, handleLoad, handleError);
-      }
+        function loadNextSource() {
+          const source = sources[sourceIndex];
 
-      function applyBookmarkFavicon(imgElement, iconWrapElement, bookmark) {
-        const controller = createBookmarkFaviconController(
-          imgElement,
-          iconWrapElement,
-          bookmark,
-        );
+          if (!source) {
+            applyBookmarkFallbackIcon(imgElement, iconWrapElement, bookmark);
+            removeListeners();
+            return;
+          }
+
+          imgElement.dataset.source = source;
+          imgElement.src = source;
+          sourceIndex += 1;
+        }
 
         function handleLoad() {
-          handleBookmarkFaviconLoad(controller, handleLoad, handleError);
+          const source = imgElement.dataset.source || null;
+
+          clearFaviconFailure(bookmark, source);
+          rememberSuccessfulFaviconSource(bookmark, source);
+          void updateBookmarkFaviconTint(controller, source);
+          removeListeners();
         }
 
         function handleError() {
-          handleBookmarkFaviconError(controller, handleLoad, handleError);
+          rememberFaviconFailure(bookmark, imgElement.dataset.source || null);
+          loadNextSource();
         }
 
         setBookmarkIconTint(iconWrapElement, null);
         imgElement.addEventListener("load", handleLoad);
         imgElement.addEventListener("error", handleError);
-        handleError();
+        loadNextSource();
       }
 
       function renderBookmarkTile(bookmark) {
@@ -1729,12 +1715,23 @@
           "aria-pressed",
           bookmarksEditMode ? "true" : "false",
         );
+        bookmarksResetButton.hidden = !bookmarksEditMode;
       }
 
       function toggleBookmarksEditMode() {
         bookmarksEditMode = !bookmarksEditMode;
         syncBookmarksEditButton();
         renderBookmarks();
+      }
+
+      function handleResetStartPage() {
+        clearStartPageStorage();
+        setBookmarksState([]);
+        bookmarksEditMode = false;
+        closeBookmarkDialog();
+        syncBookmarksEditButton();
+        renderBookmarks();
+        resetBackgroundTheme();
       }
 
       async function applyBingBackground() {
@@ -1755,7 +1752,7 @@
         applyBackgroundTheme(backgroundUrl, tintRgb);
 
         if (!tintRgb) {
-          tintRgb = await tryCalculateBackgroundTint(backgroundUrl);
+          tintRgb = await calculateRemoteTint(backgroundUrl);
 
           if (tintRgb) {
             applyBackgroundTheme(backgroundUrl, tintRgb);
@@ -1803,6 +1800,7 @@
         bookmarksEditMode = false;
         syncBookmarksEditButton();
         bookmarksEditButton.addEventListener("click", toggleBookmarksEditMode);
+        bookmarksResetButton.addEventListener("click", handleResetStartPage);
         omniboxInput.addEventListener("input", resizeOmniboxInput);
         omniboxInput.addEventListener("keydown", handleOmniboxKeyDown);
         bookmarkDialogCancelButton.addEventListener(
