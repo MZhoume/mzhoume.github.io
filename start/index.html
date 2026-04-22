@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Start</title>
+    <style>
+      :root {
+        --color-text: #1a1a1a;
+        --color-border: rgb(17 17 17 / 18%);
+        --color-placeholder: rgb(17 17 17 / 56%);
+        --color-focus: #0a84ff;
+        --color-bg: rgb(255 255 255 / 72%);
+        --color-surface: rgb(255 255 255 / 88%);
+        --color-error: #b42318;
+        --color-shadow: rgb(0 0 0 / 20%);
+        --color-accent: #0a84ff;
+        --color-on-accent: #fff;
+        --color-danger: #d64545;
+        --color-on-danger: #fff;
+        --radius-pill: 999px;
+        --radius-card: 24px;
+        --blur-soft: 6px;
+        --blur-strong: 10px;
+        --shadow-soft: 0 10px 24px rgb(0 0 0 / 16%);
+        --shadow-soft-hover: 0 14px 28px rgb(0 0 0 / 20%);
+        --shadow-strong: 0 14px 30px rgb(0 0 0 / 26%);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-text: #f5f7fa;
+          --color-border: rgb(255 255 255 / 18%);
+          --color-placeholder: rgb(255 255 255 / 60%);
+          --color-focus: #7cc4ff;
+          --color-bg: rgb(8 12 18 / 52%);
+          --color-surface: rgb(16 20 26 / 84%);
+          --color-error: #ff8a80;
+          --color-shadow: rgb(0 0 0 / 48%);
+          --color-accent: #5aaeff;
+          --color-on-accent: #fff;
+          --color-danger: #ff6b6b;
+          --color-on-danger: #fff;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      button,
+      input,
+      dialog {
+        font: inherit;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 20vh 32px 32px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--color-bg);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      .start-form {
+        width: min(100%, 1024px);
+      }
+
+      .bookmarks {
+        width: min(100%, 1024px);
+        margin-top: 20px;
+      }
+
+      .bookmarks-header {
+        display: flex;
+        justify-content: center;
+        margin-top: 14px;
+      }
+
+      .bookmarks-edit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 36px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-pill);
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1;
+        padding: 0 16px;
+        cursor: pointer;
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(var(--blur-strong));
+        -webkit-backdrop-filter: blur(var(--blur-strong));
+        transition:
+          background-color 120ms ease,
+          border-color 120ms ease,
+          color 120ms ease,
+          box-shadow 120ms ease,
+          transform 120ms ease;
+      }
+
+      .bookmarks-edit-button::before {
+        content: "✎";
+        font-size: 12px;
+        line-height: 1;
+        opacity: 0.85;
+      }
+
+      .bookmarks-edit-button:hover {
+        box-shadow: var(--shadow-soft-hover);
+        transform: translateY(-1px);
+      }
+
+      .bookmarks-edit-button[aria-pressed="true"] {
+        border-color: transparent;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        box-shadow: var(--shadow-strong);
+      }
+
+      .bookmarks-edit-button[aria-pressed="true"]::before {
+        content: "✓";
+      }
+
+      .bookmarks-edit-button:focus-visible {
+        outline: 1px solid var(--color-focus);
+        outline-offset: 2px;
+      }
+
+      .bookmarks-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .bookmark-tile {
+        position: relative;
+      }
+
+      .bookmark-link,
+      .bookmark-add {
+        width: 100%;
+        border: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 2px;
+        background: transparent;
+        color: var(--color-text);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .bookmark-icon-wrap {
+        width: 72px;
+        height: 72px;
+        border-radius: var(--radius-card);
+        background: var(--color-bg);
+        backdrop-filter: blur(var(--blur-soft));
+        -webkit-backdrop-filter: blur(var(--blur-soft));
+        display: grid;
+        place-items: center;
+      }
+
+      .bookmark-add-icon {
+        font-size: 34px;
+        line-height: 1;
+      }
+
+      .bookmark-icon {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+
+      .bookmark-title {
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bookmark-remove {
+        position: absolute;
+        top: 2px;
+        left: calc(50% + 36px);
+        width: 18px;
+        height: 18px;
+        border: 0;
+        border-radius: 50%;
+        background: var(--color-danger);
+        color: var(--color-on-danger);
+        font-size: 12px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transform: translateX(-50%);
+      }
+
+      .bookmark-remove:focus-visible,
+      .bookmark-link:focus-visible,
+      .bookmark-add:focus-visible {
+        outline: 1px solid var(--color-focus);
+      }
+
+      .bookmark-dialog {
+        width: min(100%, 420px);
+        padding: 0;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-card);
+        color: var(--color-text);
+        background: var(--color-surface);
+        box-shadow: 0 20px 50px var(--color-shadow);
+      }
+
+      .bookmark-dialog::backdrop {
+        background: rgb(0 0 0 / 35%);
+        backdrop-filter: blur(var(--blur-soft));
+        -webkit-backdrop-filter: blur(var(--blur-soft));
+      }
+
+      .bookmark-dialog-form {
+        display: grid;
+        gap: 16px;
+        padding: 24px;
+      }
+
+      .bookmark-dialog-title {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .bookmark-field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .bookmark-label {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .bookmark-text-input {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid var(--color-border);
+        border-radius: 14px;
+        padding: 10px 14px;
+        color: var(--color-text);
+        background: var(--color-bg);
+        backdrop-filter: blur(var(--blur-soft));
+        -webkit-backdrop-filter: blur(var(--blur-soft));
+      }
+
+      .bookmark-text-input:focus-visible {
+        outline: 1px solid var(--color-focus);
+      }
+
+      .bookmark-help,
+      .bookmark-error {
+        margin: 0;
+        font-size: 13px;
+      }
+
+      .bookmark-help {
+        color: var(--color-placeholder);
+      }
+
+      .bookmark-error {
+        min-height: 1em;
+        color: var(--color-error);
+      }
+
+      .bookmark-dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .bookmark-dialog-button {
+        min-height: 40px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-pill);
+        padding: 0 16px;
+        color: var(--color-text);
+        background: transparent;
+        cursor: pointer;
+        transition:
+          background-color 120ms ease,
+          border-color 120ms ease,
+          color 120ms ease;
+      }
+
+      .bookmark-dialog-button[data-variant="primary"] {
+        border-color: transparent;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+      }
+
+      .bookmark-dialog-button:focus-visible {
+        outline: 1px solid var(--color-focus);
+      }
+
+      .omnibox {
+        position: relative;
+      }
+
+      .omnibox-input {
+        width: 100%;
+        height: 48px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-card);
+        padding: 0 72px 0 24px;
+        font-size: 18px;
+        line-height: 1;
+        color: var(--color-text);
+        background: var(--color-bg);
+        backdrop-filter: blur(var(--blur-soft));
+        -webkit-backdrop-filter: blur(var(--blur-soft));
+      }
+
+      .omnibox-input::placeholder {
+        color: var(--color-placeholder);
+      }
+
+      .omnibox-input:focus {
+        box-shadow: 0 12px 36px rgb(0 0 0 / 30%);
+        outline: none;
+      }
+
+      .omnibox-input:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: -2px;
+      }
+
+      .omnibox-submit {
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 21px;
+        display: grid;
+        place-items: center;
+        background: transparent;
+        color: var(--color-text);
+        cursor: pointer;
+      }
+
+      .omnibox-submit-icon {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        stroke-width: 2.25;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .omnibox-submit:focus-visible {
+        outline: 1px solid var(--color-focus);
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding-inline: 16px;
+        }
+
+        .bookmarks-grid {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .bookmark-dialog {
+          width: calc(100% - 24px);
+        }
+
+        .bookmark-dialog-form {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .bookmarks-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <form
+      class="start-form"
+      id="startForm"
+      aria-label="Start page address form"
+    >
+      <div class="omnibox">
+        <label for="omniboxInput" class="visually-hidden"
+          >Search or type URL</label
+        >
+        <input
+          id="omniboxInput"
+          class="omnibox-input"
+          name="q"
+          type="text"
+          inputmode="search"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="Search or type URL"
+        />
+        <button class="omnibox-submit" type="submit" aria-label="Go">
+          <svg
+            class="omnibox-submit-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M5 12h12" />
+            <path d="M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <section class="bookmarks" aria-label="Bookmark shortcuts">
+      <p id="bookmarkStatus" class="visually-hidden" aria-live="polite"></p>
+      <div id="bookmarksGrid" class="bookmarks-grid"></div>
+      <div class="bookmarks-header">
+        <button
+          id="bookmarksEditButton"
+          class="bookmarks-edit-button"
+          type="button"
+          aria-pressed="false"
+        >
+          Edit
+        </button>
+      </div>
+    </section>
+
+    <dialog
+      id="bookmarkDialog"
+      class="bookmark-dialog"
+      aria-labelledby="bookmarkDialogTitle"
+    >
+      <form
+        id="bookmarkDialogForm"
+        class="bookmark-dialog-form"
+        method="dialog"
+      >
+        <h2 id="bookmarkDialogTitle" class="bookmark-dialog-title">
+          Add bookmark
+        </h2>
+        <div class="bookmark-field">
+          <label class="bookmark-label" for="bookmarkUrlInput">Address</label>
+          <input
+            id="bookmarkUrlInput"
+            class="bookmark-text-input"
+            name="url"
+            type="text"
+            inputmode="url"
+            autocomplete="url"
+            spellcheck="false"
+            required
+          />
+          <p class="bookmark-help">
+            Enter a full URL or a bare domain like example.com.
+          </p>
+        </div>
+        <div class="bookmark-field">
+          <label class="bookmark-label" for="bookmarkTitleInput">Name</label>
+          <input
+            id="bookmarkTitleInput"
+            class="bookmark-text-input"
+            name="title"
+            type="text"
+            maxlength="80"
+            autocomplete="off"
+          />
+        </div>
+        <p id="bookmarkDialogError" class="bookmark-error" role="alert"></p>
+        <div class="bookmark-dialog-actions">
+          <button
+            class="bookmark-dialog-button"
+            type="button"
+            id="bookmarkDialogCancelButton"
+          >
+            Cancel
+          </button>
+          <button
+            class="bookmark-dialog-button"
+            type="submit"
+            data-variant="primary"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <script>
+      const form = document.getElementById("startForm");
+      const input = document.getElementById("omniboxInput");
+      const bookmarksGrid = document.getElementById("bookmarksGrid");
+      const bookmarksEditButton = document.getElementById(
+        "bookmarksEditButton",
+      );
+      const bookmarkStatus = document.getElementById("bookmarkStatus");
+      const bookmarkDialog = document.getElementById("bookmarkDialog");
+      const bookmarkDialogForm = document.getElementById("bookmarkDialogForm");
+      const bookmarkDialogCancelButton = document.getElementById(
+        "bookmarkDialogCancelButton",
+      );
+      const bookmarkUrlInput = document.getElementById("bookmarkUrlInput");
+      const bookmarkTitleInput = document.getElementById("bookmarkTitleInput");
+      const bookmarkDialogError = document.getElementById(
+        "bookmarkDialogError",
+      );
+
+      const BOOKMARKS_STORAGE_KEY = "startPageBookmarks";
+      const BOOKMARKS_EDIT_MODE_KEY = "startPageBookmarksEditMode";
+      const BING_CACHE_KEY = "bingBackgroundCache";
+      const BING_API_URL =
+        "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US";
+      const SEARCH_URL_BASE = "https://www.google.com/search?q=";
+      const GOOGLE_FAVICON_URL =
+        "https://www.google.com/s2/favicons?sz=128&domain=";
+      const STORAGE_TRUE = "true";
+      const DOMAIN_LIKE_PATTERN =
+        /^(localhost|([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,})(:\d{2,5})?(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/i;
+
+      let bookmarksEditMode = false;
+      let bookmarkDialogReturnFocusElement = null;
+
+      function getStorageItem(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch {
+          return null;
+        }
+      }
+
+      function setStorageItem(key, value) {
+        try {
+          localStorage.setItem(key, value);
+        } catch {
+          return false;
+        }
+
+        return true;
+      }
+
+      function removeStorageItem(key) {
+        try {
+          localStorage.removeItem(key);
+        } catch {
+          // ignore
+        }
+      }
+
+      function readJsonStorage(key) {
+        const raw = getStorageItem(key);
+        if (!raw) {
+          return null;
+        }
+
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }
+
+      function writeJsonStorage(key, value) {
+        return setStorageItem(key, JSON.stringify(value));
+      }
+
+      async function fetchJsonWithTimeout(url, timeoutMs) {
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(function () {
+          controller.abort();
+        }, timeoutMs);
+
+        try {
+          const response = await fetch(url, {
+            signal: controller.signal,
+          });
+
+          if (!response.ok) {
+            throw new Error("Request failed");
+          }
+
+          return await response.json();
+        } finally {
+          window.clearTimeout(timeoutId);
+        }
+      }
+
+      function announceBookmarkStatus(message) {
+        bookmarkStatus.textContent = "";
+
+        window.requestAnimationFrame(function () {
+          bookmarkStatus.textContent = message;
+        });
+      }
+
+      function createBookmarkId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+
+        return (
+          "bookmark-" + Date.now() + "-" + Math.random().toString(16).slice(2)
+        );
+      }
+
+      function isHttpUrl(value) {
+        try {
+          const parsed = new URL(value);
+          return parsed.protocol === "http:" || parsed.protocol === "https:";
+        } catch {
+          return false;
+        }
+      }
+
+      function isBareDomain(value) {
+        if (/\s/.test(value)) {
+          return false;
+        }
+
+        return DOMAIN_LIKE_PATTERN.test(value);
+      }
+
+      function resolveDestination(rawValue) {
+        const value = rawValue.trim();
+
+        if (!value) {
+          return null;
+        }
+
+        if (isHttpUrl(value)) {
+          return value;
+        }
+
+        if (isBareDomain(value)) {
+          return "https://" + value;
+        }
+
+        return SEARCH_URL_BASE + encodeURIComponent(value);
+      }
+
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const destination = resolveDestination(input.value);
+        if (!destination) {
+          return;
+        }
+
+        window.location.assign(destination);
+      }
+
+      function normalizeBookmarkUrl(rawValue) {
+        if (typeof rawValue !== "string") {
+          return null;
+        }
+
+        const trimmed = rawValue.trim();
+        if (!trimmed) {
+          return null;
+        }
+
+        if (/\s/.test(trimmed)) {
+          return null;
+        }
+
+        const hasProtocol = /^[a-z]+:\/\//i.test(trimmed);
+        if (!hasProtocol && !isBareDomain(trimmed)) {
+          return null;
+        }
+
+        const withProtocol = hasProtocol ? trimmed : "https://" + trimmed;
+
+        try {
+          const parsed = new URL(withProtocol);
+          if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+            return null;
+          }
+
+          if (!parsed.hostname || parsed.hostname.includes("%")) {
+            return null;
+          }
+
+          return parsed.href;
+        } catch {
+          return null;
+        }
+      }
+
+      function getBookmarkTitle(urlValue) {
+        try {
+          const parsed = new URL(urlValue);
+          return parsed.hostname.replace(/^www\./i, "") || urlValue;
+        } catch {
+          return urlValue;
+        }
+      }
+
+      function setBookmarkDialogError(message) {
+        bookmarkDialogError.textContent = message || "";
+      }
+
+      function closeBookmarkDialog() {
+        if (bookmarkDialog.open) {
+          bookmarkDialog.close();
+        }
+
+        setBookmarkDialogError("");
+        bookmarkDialogForm.reset();
+
+        if (bookmarkDialogReturnFocusElement) {
+          bookmarkDialogReturnFocusElement.focus();
+          bookmarkDialogReturnFocusElement = null;
+        }
+      }
+
+      function openBookmarkDialog(defaultValues) {
+        const values = defaultValues || {};
+
+        bookmarkDialogReturnFocusElement = document.activeElement;
+        setBookmarkDialogError("");
+        bookmarkUrlInput.value = values.url || "";
+        bookmarkTitleInput.value = values.title || "";
+        bookmarkDialog.showModal();
+        bookmarkUrlInput.focus();
+        bookmarkUrlInput.select();
+      }
+
+      function loadBookmarks() {
+        const parsed = readJsonStorage(BOOKMARKS_STORAGE_KEY);
+        if (!Array.isArray(parsed)) {
+          return [];
+        }
+
+        return parsed.filter(function (item) {
+          return (
+            item &&
+            typeof item.id === "string" &&
+            typeof item.title === "string" &&
+            typeof item.url === "string" &&
+            isHttpUrl(item.url)
+          );
+        });
+      }
+
+      function saveBookmarks(bookmarks) {
+        return writeJsonStorage(BOOKMARKS_STORAGE_KEY, bookmarks);
+      }
+
+      function loadBookmarksEditMode() {
+        return getStorageItem(BOOKMARKS_EDIT_MODE_KEY) === STORAGE_TRUE;
+      }
+
+      function saveBookmarksEditMode(value) {
+        if (value) {
+          setStorageItem(BOOKMARKS_EDIT_MODE_KEY, STORAGE_TRUE);
+        } else {
+          removeStorageItem(BOOKMARKS_EDIT_MODE_KEY);
+        }
+      }
+
+      function getFaviconCandidates(urlValue) {
+        try {
+          const parsed = new URL(urlValue);
+          return [
+            parsed.origin + "/favicon.ico",
+            GOOGLE_FAVICON_URL + parsed.hostname,
+          ];
+        } catch {
+          return [];
+        }
+      }
+
+      function buildFallbackIcon(label) {
+        const first = (label || "?").trim().charAt(0).toUpperCase() || "?";
+        const xmlSafeFirst = first
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&apos;");
+        const svg =
+          "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
+          "<rect width='64' height='64' rx='14' fill='#818181'/>" +
+          "<text x='32' y='41' text-anchor='middle' font-family='Arial' font-size='28' fill='white'>" +
+          xmlSafeFirst +
+          "</text></svg>";
+
+        return "data:image/svg+xml," + encodeURIComponent(svg);
+      }
+
+      function loadFavicon(imgElement, bookmark) {
+        const sources = getFaviconCandidates(bookmark.url);
+        let sourceIndex = 0;
+
+        function applyNextSource() {
+          if (sourceIndex < sources.length) {
+            imgElement.src = sources[sourceIndex];
+            sourceIndex += 1;
+            return;
+          }
+
+          imgElement.src = buildFallbackIcon(bookmark.title);
+          imgElement.removeEventListener("error", applyNextSource);
+        }
+
+        imgElement.addEventListener("error", applyNextSource);
+        applyNextSource();
+      }
+
+      function renderBookmarkTile(bookmark) {
+        const tile = document.createElement("div");
+        tile.className = "bookmark-tile";
+
+        const link = document.createElement("a");
+        link.className = "bookmark-link";
+        link.href = bookmark.url;
+        link.setAttribute("aria-label", "Open bookmark " + bookmark.title);
+
+        const iconWrap = document.createElement("span");
+        iconWrap.className = "bookmark-icon-wrap";
+
+        const icon = document.createElement("img");
+        icon.className = "bookmark-icon";
+        icon.alt = "";
+        icon.decoding = "async";
+        icon.loading = "lazy";
+        loadFavicon(icon, bookmark);
+
+        const title = document.createElement("span");
+        title.className = "bookmark-title";
+        title.textContent = bookmark.title;
+
+        iconWrap.appendChild(icon);
+        link.appendChild(iconWrap);
+        link.appendChild(title);
+        tile.appendChild(link);
+
+        if (bookmarksEditMode) {
+          const removeButton = document.createElement("button");
+          removeButton.className = "bookmark-remove";
+          removeButton.type = "button";
+          removeButton.setAttribute(
+            "aria-label",
+            "Remove bookmark " + bookmark.title,
+          );
+          removeButton.textContent = "\u00d7";
+          removeButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            removeBookmark(bookmark.id);
+          });
+          tile.appendChild(removeButton);
+        }
+
+        return tile;
+      }
+
+      function renderAddTile() {
+        const tile = document.createElement("div");
+        tile.className = "bookmark-tile";
+
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.className = "bookmark-add";
+        addButton.setAttribute("aria-label", "Add bookmark");
+
+        const iconWrap = document.createElement("span");
+        iconWrap.className = "bookmark-icon-wrap";
+
+        const icon = document.createElement("span");
+        icon.className = "bookmark-add-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = "+";
+
+        iconWrap.appendChild(icon);
+
+        const title = document.createElement("span");
+        title.className = "bookmark-title";
+        title.textContent = "Add";
+
+        addButton.appendChild(iconWrap);
+        addButton.appendChild(title);
+        addButton.addEventListener("click", openBookmarkDialog);
+        tile.appendChild(addButton);
+
+        return tile;
+      }
+
+      function renderBookmarks(bookmarks) {
+        if (bookmarks === undefined) {
+          bookmarks = loadBookmarks();
+        }
+        bookmarksGrid.innerHTML = "";
+
+        const fragment = document.createDocumentFragment();
+
+        bookmarks.forEach(function (bookmark) {
+          fragment.appendChild(renderBookmarkTile(bookmark));
+        });
+
+        if (bookmarksEditMode) {
+          fragment.appendChild(renderAddTile());
+        }
+
+        bookmarksGrid.appendChild(fragment);
+      }
+
+      function removeBookmark(bookmarkId) {
+        const bookmarks = loadBookmarks();
+        const updated = bookmarks.filter(function (bookmark) {
+          return bookmark.id !== bookmarkId;
+        });
+        const removedBookmark = bookmarks.find(function (bookmark) {
+          return bookmark.id === bookmarkId;
+        });
+
+        saveBookmarks(updated);
+        renderBookmarks(updated);
+
+        if (removedBookmark) {
+          announceBookmarkStatus(
+            "Removed bookmark " + removedBookmark.title + ".",
+          );
+        }
+      }
+
+      function syncBookmarksEditButton() {
+        bookmarksEditButton.textContent = bookmarksEditMode ? "Done" : "Edit";
+        bookmarksEditButton.setAttribute(
+          "aria-pressed",
+          bookmarksEditMode ? "true" : "false",
+        );
+      }
+
+      function toggleBookmarksEditMode() {
+        bookmarksEditMode = !bookmarksEditMode;
+        saveBookmarksEditMode(bookmarksEditMode);
+        syncBookmarksEditButton();
+        renderBookmarks();
+        announceBookmarkStatus(
+          bookmarksEditMode
+            ? "Bookmark editing enabled."
+            : "Bookmark editing disabled.",
+        );
+      }
+
+      async function applyBingBackground() {
+        try {
+          const today = new Date().toISOString().split("T")[0];
+          const cachedData = readJsonStorage(BING_CACHE_KEY);
+
+          let backgroundUrl = null;
+
+          if (cachedData && cachedData.date === today) {
+            backgroundUrl = cachedData.url;
+          } else {
+            const proxyUrl =
+              "https://corsproxy.io/?url=" + encodeURIComponent(BING_API_URL);
+            const data = await fetchJsonWithTimeout(proxyUrl, 4000);
+            const imagePath = data?.images?.[0]?.url;
+
+            if (typeof imagePath !== "string" || imagePath.length === 0) {
+              throw new Error("Bing image URL missing");
+            }
+
+            backgroundUrl = "https://www.bing.com" + imagePath;
+            writeJsonStorage(BING_CACHE_KEY, {
+              date: today,
+              url: backgroundUrl,
+            });
+          }
+
+          document.body.style.backgroundImage =
+            "url(" + JSON.stringify(backgroundUrl) + ")";
+        } catch (error) {
+          console.warn("Background image was not loaded.", error);
+        }
+      }
+
+      function initializeBookmarks() {
+        bookmarksEditMode = loadBookmarksEditMode();
+        syncBookmarksEditButton();
+        bookmarksEditButton.addEventListener("click", toggleBookmarksEditMode);
+        bookmarkDialogCancelButton.addEventListener(
+          "click",
+          closeBookmarkDialog,
+        );
+        bookmarkDialog.addEventListener("cancel", function (event) {
+          event.preventDefault();
+          closeBookmarkDialog();
+        });
+        bookmarkUrlInput.addEventListener("input", function () {
+          setBookmarkDialogError("");
+        });
+        bookmarkTitleInput.addEventListener("input", function () {
+          setBookmarkDialogError("");
+        });
+        bookmarkDialogForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const normalizedUrl = normalizeBookmarkUrl(bookmarkUrlInput.value);
+          if (!normalizedUrl) {
+            setBookmarkDialogError("Please enter a valid URL or domain.");
+            bookmarkUrlInput.focus();
+            return;
+          }
+
+          const suggestedTitle = getBookmarkTitle(normalizedUrl);
+          const title = bookmarkTitleInput.value.trim() || suggestedTitle;
+          const bookmarks = loadBookmarks();
+
+          bookmarks.push({
+            id: createBookmarkId(),
+            title: title,
+            url: normalizedUrl,
+          });
+
+          if (!saveBookmarks(bookmarks)) {
+            setBookmarkDialogError("Could not save — storage may be full.");
+            return;
+          }
+          closeBookmarkDialog();
+          renderBookmarks(bookmarks);
+          announceBookmarkStatus("Added bookmark " + title + ".");
+        });
+        renderBookmarks();
+      }
+
+      form.addEventListener("submit", handleFormSubmit);
+      applyBingBackground();
+      initializeBookmarks();
+    </script>
+  </body>
+</html>
