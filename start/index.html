@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>Start</title>
     <style>
       :root {
@@ -51,6 +54,7 @@
 
       * {
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
       }
 
       html,
@@ -64,6 +68,11 @@
       input,
       dialog {
         font: inherit;
+      }
+
+      input {
+        appearance: none;
+        -webkit-appearance: none;
       }
 
       .visually-hidden {
@@ -477,6 +486,7 @@
             inputmode="search"
             autocomplete="off"
             autocorrect="off"
+            autocapitalize="none"
             spellcheck="false"
             placeholder="Search or type URL"
           />
@@ -532,6 +542,8 @@
             type="text"
             inputmode="url"
             autocomplete="url"
+            autocorrect="off"
+            autocapitalize="none"
             spellcheck="false"
             required
           />
@@ -1073,18 +1085,33 @@
           throw new Error("fast-average-color is unavailable");
         }
 
-        const color = await fastAverageColor.getColorAsync(urlValue, {
-          algorithm: "dominant",
-          crossOrigin: "anonymous",
-          silent: true,
-        });
-        const tintRgb = readCachedTintRgb(color?.value);
+        // Try direct URL first; fall back to CORS proxy for browsers with strict
+        // cross-origin canvas restrictions (e.g. iOS Safari).
+        const attempts = [urlValue, buildProxyUrl(urlValue)];
 
-        if (!tintRgb) {
-          throw new Error("Background tint could not be derived");
+        for (const attempt of attempts) {
+          try {
+            const color = await fastAverageColor.getColorAsync(attempt, {
+              algorithm: "dominant",
+              crossOrigin: "anonymous",
+              silent: true,
+            });
+
+            if (color?.error) {
+              continue;
+            }
+
+            const tintRgb = readCachedTintRgb(color?.value);
+
+            if (tintRgb) {
+              return tintRgb;
+            }
+          } catch {
+            // try next attempt
+          }
         }
 
-        return tintRgb;
+        throw new Error("Background tint could not be derived");
       }
 
       function isHttpUrl(value) {
@@ -1317,23 +1344,34 @@
           return cachedTint;
         }
 
-        try {
-          const color = await fastAverageColor.getColorAsync(source, {
-            algorithm: "dominant",
-            crossOrigin: "anonymous",
-            silent: true,
-          });
-          const tintRgb = readCachedTintRgb(color?.value);
+        // Try direct URL first; fall back to CORS proxy for browsers with strict
+        // cross-origin canvas restrictions (e.g. iOS Safari).
+        const attempts = [source, buildProxyUrl(source)];
 
-          if (!tintRgb) {
-            return null;
+        for (const attempt of attempts) {
+          try {
+            const color = await fastAverageColor.getColorAsync(attempt, {
+              algorithm: "dominant",
+              crossOrigin: "anonymous",
+              silent: true,
+            });
+
+            if (color?.error) {
+              continue;
+            }
+
+            const tintRgb = readCachedTintRgb(color?.value);
+
+            if (tintRgb) {
+              rememberFaviconTint(source, tintRgb);
+              return tintRgb;
+            }
+          } catch {
+            // try next attempt
           }
-
-          rememberFaviconTint(source, tintRgb);
-          return tintRgb;
-        } catch {
-          return null;
         }
+
+        return null;
       }
 
       function loadFavicon(imgElement, iconWrapElement, bookmark) {
