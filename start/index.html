@@ -11,6 +11,9 @@
         --color-placeholder: rgb(17 17 17 / 56%);
         --color-focus: #0a84ff;
         --color-bg: rgb(255 255 255 / 72%);
+        --page-background-tint: var(--color-bg);
+        --page-background-image: none;
+        --page-top-space: clamp(96px, 20dvh, 192px);
         --color-surface: rgb(255 255 255 / 88%);
         --color-error: #b42318;
         --color-shadow: rgb(0 0 0 / 20%);
@@ -34,6 +37,8 @@
           --color-placeholder: rgb(255 255 255 / 60%);
           --color-focus: #7cc4ff;
           --color-bg: rgb(8 12 18 / 52%);
+          --page-background-tint: var(--color-bg);
+          --page-background-image: none;
           --color-surface: rgb(16 20 26 / 84%);
           --color-error: #ff8a80;
           --color-shadow: rgb(0 0 0 / 48%);
@@ -51,6 +56,7 @@
       html,
       body {
         margin: 0;
+        height: 100%;
         min-height: 100%;
       }
 
@@ -74,16 +80,41 @@
 
       body {
         min-height: 100vh;
+        min-height: 100svh;
+        min-height: 100dvh;
+        position: relative;
+        overflow: hidden;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background-color: var(--page-background-tint);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-color: var(--page-background-tint);
+        background-image: var(--page-background-image);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      .page-shell {
+        width: 100%;
+        height: 100vh;
+        height: 100svh;
+        height: 100dvh;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding: 20vh 32px 32px;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        background: var(--color-bg);
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: cover;
+        padding: var(--page-top-space) 32px
+          calc(32px + env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior-y: contain;
+        -webkit-overflow-scrolling: touch;
       }
 
       .start-form {
@@ -184,11 +215,12 @@
         width: 72px;
         height: 72px;
         border-radius: var(--radius-card);
-        background: var(--color-bg);
+        background-color: var(--bookmark-background-tint, var(--color-bg));
         backdrop-filter: blur(var(--blur-soft));
         -webkit-backdrop-filter: blur(var(--blur-soft));
         display: grid;
         place-items: center;
+        transition: background-color 120ms ease;
       }
 
       .bookmark-add-icon {
@@ -207,9 +239,15 @@
         text-align: center;
         font-size: 13px;
         font-weight: 600;
-        white-space: nowrap;
+        line-clamp: 2;
+        line-height: 1.25;
+        min-height: 2.5em;
         overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
       }
 
       .bookmark-remove {
@@ -396,7 +434,7 @@
       }
 
       @media (max-width: 640px) {
-        body {
+        .page-shell {
           padding-inline: 16px;
         }
 
@@ -421,54 +459,56 @@
     </style>
   </head>
   <body>
-    <form
-      class="start-form"
-      id="startForm"
-      aria-label="Start page address form"
-    >
-      <div class="omnibox">
-        <label for="omniboxInput" class="visually-hidden"
-          >Search or type URL</label
-        >
-        <input
-          id="omniboxInput"
-          class="omnibox-input"
-          name="q"
-          type="text"
-          inputmode="search"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-          placeholder="Search or type URL"
-        />
-        <button class="omnibox-submit" type="submit" aria-label="Go">
-          <svg
-            class="omnibox-submit-icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            focusable="false"
+    <main class="page-shell">
+      <form
+        class="start-form"
+        id="startForm"
+        aria-label="Start page address form"
+      >
+        <div class="omnibox">
+          <label for="omniboxInput" class="visually-hidden"
+            >Search or type URL</label
           >
-            <path d="M5 12h12" />
-            <path d="M13 6l6 6-6 6" />
-          </svg>
-        </button>
-      </div>
-    </form>
+          <input
+            id="omniboxInput"
+            class="omnibox-input"
+            name="q"
+            type="text"
+            inputmode="search"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="Search or type URL"
+          />
+          <button class="omnibox-submit" type="submit" aria-label="Go">
+            <svg
+              class="omnibox-submit-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M5 12h12" />
+              <path d="M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      </form>
 
-    <section class="bookmarks" aria-label="Bookmark shortcuts">
-      <p id="bookmarkStatus" class="visually-hidden" aria-live="polite"></p>
-      <div id="bookmarksGrid" class="bookmarks-grid"></div>
-      <div class="bookmarks-header">
-        <button
-          id="bookmarksEditButton"
-          class="bookmarks-edit-button"
-          type="button"
-          aria-pressed="false"
-        >
-          Edit
-        </button>
-      </div>
-    </section>
+      <section class="bookmarks" aria-label="Bookmark shortcuts">
+        <p id="bookmarkStatus" class="visually-hidden" aria-live="polite"></p>
+        <div id="bookmarksGrid" class="bookmarks-grid"></div>
+        <div class="bookmarks-header">
+          <button
+            id="bookmarksEditButton"
+            class="bookmarks-edit-button"
+            type="button"
+            aria-pressed="false"
+          >
+            Edit
+          </button>
+        </div>
+      </section>
+    </main>
 
     <dialog
       id="bookmarkDialog"
@@ -530,6 +570,7 @@
       </form>
     </dialog>
 
+    <script src="https://unpkg.com/fast-average-color@9.5.2/dist/index.browser.min.js"></script>
     <script>
       const form = document.getElementById("startForm");
       const input = document.getElementById("omniboxInput");
@@ -552,6 +593,14 @@
       const BOOKMARKS_STORAGE_KEY = "startPageBookmarks";
       const BOOKMARKS_EDIT_MODE_KEY = "startPageBookmarksEditMode";
       const BING_CACHE_KEY = "bingBackgroundCache";
+      const FAVICON_FAILURES_STORAGE_KEY = "faviconFailureCache";
+      const FAVICON_TINTS_STORAGE_KEY = "faviconTintCache";
+      const FAVICON_FAILURE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
+      const FAVICON_TINT_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+      const MAX_FAVICON_FAILURES = 128;
+      const MAX_FAVICON_TINTS = 256;
+      const FALLBACK_ICON_TINT_RGB = [129, 129, 129];
+      const REMOTE_ASSET_PROXY_URL = "https://api.allorigins.win/raw?url=";
       const BING_API_URL =
         "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US";
       const SEARCH_URL_BASE = "https://www.google.com/search?q=";
@@ -560,9 +609,15 @@
       const STORAGE_TRUE = "true";
       const DOMAIN_LIKE_PATTERN =
         /^(localhost|([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,})(:\d{2,5})?(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/i;
+      const fastAverageColor =
+        typeof window.FastAverageColor === "function"
+          ? new window.FastAverageColor()
+          : null;
 
       let bookmarksEditMode = false;
       let bookmarkDialogReturnFocusElement = null;
+      let faviconFailureCache = null;
+      let faviconTintCache = null;
 
       function getStorageItem(key) {
         try {
@@ -607,6 +662,240 @@
         return setStorageItem(key, JSON.stringify(value));
       }
 
+      function getTodayDateString() {
+        return new Date().toISOString().split("T")[0];
+      }
+
+      function pruneFaviconFailureCache(cache) {
+        const entries = Object.entries(cache);
+
+        if (entries.length <= MAX_FAVICON_FAILURES) {
+          return false;
+        }
+
+        entries
+          .sort(function (left, right) {
+            return right[1] - left[1];
+          })
+          .slice(MAX_FAVICON_FAILURES)
+          .forEach(function (entry) {
+            delete cache[entry[0]];
+          });
+
+        return true;
+      }
+
+      function pruneFaviconTintCache(cache) {
+        const entries = Object.entries(cache);
+
+        if (entries.length <= MAX_FAVICON_TINTS) {
+          return false;
+        }
+
+        entries
+          .sort(function (left, right) {
+            return right[1].timestamp - left[1].timestamp;
+          })
+          .slice(MAX_FAVICON_TINTS)
+          .forEach(function (entry) {
+            delete cache[entry[0]];
+          });
+
+        return true;
+      }
+
+      function loadFaviconFailureCache() {
+        if (faviconFailureCache) {
+          return faviconFailureCache;
+        }
+
+        const parsed = readJsonStorage(FAVICON_FAILURES_STORAGE_KEY);
+        const now = Date.now();
+        const normalizedCache = {};
+        let changed = false;
+
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          Object.keys(parsed).forEach(function (source) {
+            const timestamp = Number(parsed[source]);
+
+            if (
+              Number.isFinite(timestamp) &&
+              now - timestamp < FAVICON_FAILURE_TTL_MS
+            ) {
+              normalizedCache[source] = timestamp;
+            } else {
+              changed = true;
+            }
+          });
+        }
+
+        faviconFailureCache = normalizedCache;
+        changed = pruneFaviconFailureCache(faviconFailureCache) || changed;
+
+        if (changed) {
+          if (Object.keys(normalizedCache).length > 0) {
+            writeJsonStorage(FAVICON_FAILURES_STORAGE_KEY, normalizedCache);
+          } else {
+            removeStorageItem(FAVICON_FAILURES_STORAGE_KEY);
+          }
+        }
+
+        return faviconFailureCache;
+      }
+
+      function persistFaviconFailureCache() {
+        const cache = loadFaviconFailureCache();
+
+        if (Object.keys(cache).length === 0) {
+          removeStorageItem(FAVICON_FAILURES_STORAGE_KEY);
+          return;
+        }
+
+        writeJsonStorage(FAVICON_FAILURES_STORAGE_KEY, cache);
+      }
+
+      function loadFaviconTintCache() {
+        if (faviconTintCache) {
+          return faviconTintCache;
+        }
+
+        const parsed = readJsonStorage(FAVICON_TINTS_STORAGE_KEY);
+        const now = Date.now();
+        const normalizedCache = {};
+        let changed = false;
+
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          Object.keys(parsed).forEach(function (source) {
+            const entry = parsed[source];
+            const timestamp = Number(entry?.timestamp);
+            const tintRgb = readCachedTintRgb(entry?.tint);
+
+            if (
+              Number.isFinite(timestamp) &&
+              now - timestamp < FAVICON_TINT_TTL_MS &&
+              tintRgb
+            ) {
+              normalizedCache[source] = {
+                timestamp: timestamp,
+                tint: tintRgb,
+              };
+            } else {
+              changed = true;
+            }
+          });
+        }
+
+        faviconTintCache = normalizedCache;
+        changed = pruneFaviconTintCache(faviconTintCache) || changed;
+
+        if (changed) {
+          if (Object.keys(normalizedCache).length > 0) {
+            writeJsonStorage(FAVICON_TINTS_STORAGE_KEY, normalizedCache);
+          } else {
+            removeStorageItem(FAVICON_TINTS_STORAGE_KEY);
+          }
+        }
+
+        return faviconTintCache;
+      }
+
+      function persistFaviconTintCache() {
+        const cache = loadFaviconTintCache();
+
+        if (Object.keys(cache).length === 0) {
+          removeStorageItem(FAVICON_TINTS_STORAGE_KEY);
+          return;
+        }
+
+        writeJsonStorage(FAVICON_TINTS_STORAGE_KEY, cache);
+      }
+
+      function getCachedFaviconTint(source) {
+        if (!source) {
+          return null;
+        }
+
+        const cache = loadFaviconTintCache();
+        const entry = cache[source];
+
+        if (!entry) {
+          return null;
+        }
+
+        if (Date.now() - entry.timestamp < FAVICON_TINT_TTL_MS) {
+          return entry.tint;
+        }
+
+        delete cache[source];
+        persistFaviconTintCache();
+        return null;
+      }
+
+      function rememberFaviconTint(source, tintRgb) {
+        if (!source || !tintRgb) {
+          return;
+        }
+
+        const cache = loadFaviconTintCache();
+        cache[source] = {
+          timestamp: Date.now(),
+          tint: tintRgb,
+        };
+        pruneFaviconTintCache(cache);
+        persistFaviconTintCache();
+      }
+
+      function hasFaviconFailure(source) {
+        if (!source) {
+          return false;
+        }
+
+        const cache = loadFaviconFailureCache();
+        const timestamp = cache[source];
+
+        if (!timestamp) {
+          return false;
+        }
+
+        if (Date.now() - timestamp < FAVICON_FAILURE_TTL_MS) {
+          return true;
+        }
+
+        delete cache[source];
+        persistFaviconFailureCache();
+        return false;
+      }
+
+      function rememberFaviconFailure(source) {
+        if (!source) {
+          return;
+        }
+
+        const cache = loadFaviconFailureCache();
+        cache[source] = Date.now();
+        pruneFaviconFailureCache(cache);
+        persistFaviconFailureCache();
+      }
+
+      function clearFaviconFailure(source) {
+        if (!source) {
+          return;
+        }
+
+        const cache = loadFaviconFailureCache();
+
+        if (!(source in cache)) {
+          return;
+        }
+
+        delete cache[source];
+        persistFaviconFailureCache();
+      }
+
+      function buildProxyUrl(urlValue) {
+        return REMOTE_ASSET_PROXY_URL + encodeURIComponent(urlValue);
+      }
+
       async function fetchJsonWithTimeout(url, timeoutMs) {
         const controller = new AbortController();
         const timeoutId = window.setTimeout(function () {
@@ -644,6 +933,158 @@
         return (
           "bookmark-" + Date.now() + "-" + Math.random().toString(16).slice(2)
         );
+      }
+
+      function clampByte(value) {
+        return Math.max(0, Math.min(255, Math.round(value)));
+      }
+
+      function mixChannel(value, target, amount) {
+        return clampByte(value + (target - value) * amount);
+      }
+
+      function readCachedTintRgb(value) {
+        if (!Array.isArray(value) || value.length < 3) {
+          return null;
+        }
+
+        const rgb = value.slice(0, 3).map(function (channel) {
+          return Number(channel);
+        });
+
+        return rgb.every(Number.isFinite)
+          ? rgb.map(function (channel) {
+              return clampByte(channel);
+            })
+          : null;
+      }
+
+      function getThemeTintPalette(tintRgb) {
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const targetRgb = prefersDark ? [10, 16, 24] : [255, 255, 255];
+        const softenedRgb = tintRgb.map(function (channel, index) {
+          return mixChannel(
+            channel,
+            targetRgb[index],
+            prefersDark ? 0.72 : 0.62,
+          );
+        });
+
+        return {
+          tint:
+            "rgb(" +
+            softenedRgb.join(" ") +
+            " / " +
+            (prefersDark ? "78%" : "76%") +
+            ")",
+          overlay:
+            "rgb(" +
+            tintRgb.join(" ") +
+            " / " +
+            (prefersDark ? "24%" : "18%") +
+            ")",
+        };
+      }
+
+      function applyBackgroundTint(tintRgb) {
+        const rootStyle = document.documentElement.style;
+
+        if (!tintRgb) {
+          rootStyle.removeProperty("--page-background-tint");
+          return null;
+        }
+
+        const palette = getThemeTintPalette(tintRgb);
+        rootStyle.setProperty("--page-background-tint", palette.tint);
+        return palette.overlay;
+      }
+
+      function applyBackgroundTheme(backgroundUrl, tintRgb) {
+        const overlayColor = applyBackgroundTint(tintRgb);
+        setBackgroundImage(backgroundUrl, overlayColor);
+      }
+
+      function setBackgroundImage(backgroundUrl, overlayColor) {
+        const rootStyle = document.documentElement.style;
+
+        if (!backgroundUrl) {
+          rootStyle.removeProperty("--page-background-image");
+          return;
+        }
+
+        const layers = [];
+
+        if (overlayColor) {
+          layers.push(
+            "linear-gradient(" + overlayColor + ", " + overlayColor + ")",
+          );
+        }
+
+        layers.push("url(" + JSON.stringify(backgroundUrl) + ")");
+        rootStyle.setProperty("--page-background-image", layers.join(", "));
+      }
+
+      function readBingCacheEntry() {
+        const cachedData = readJsonStorage(BING_CACHE_KEY);
+
+        if (
+          !cachedData ||
+          typeof cachedData !== "object" ||
+          Array.isArray(cachedData)
+        ) {
+          return null;
+        }
+
+        const backgroundUrl = isHttpUrl(cachedData.url) ? cachedData.url : null;
+
+        if (!backgroundUrl) {
+          return null;
+        }
+
+        return {
+          date: typeof cachedData.date === "string" ? cachedData.date : null,
+          url: backgroundUrl,
+          tint: readCachedTintRgb(cachedData.tint),
+        };
+      }
+
+      function writeBingCacheEntry(cacheEntry) {
+        return writeJsonStorage(BING_CACHE_KEY, {
+          date: cacheEntry.date,
+          url: cacheEntry.url,
+          tint: cacheEntry.tint,
+        });
+      }
+
+      function applyCachedBackgroundTheme() {
+        const cachedEntry = readBingCacheEntry();
+
+        if (!cachedEntry) {
+          return;
+        }
+
+        applyBackgroundTheme(cachedEntry.url, cachedEntry.tint);
+      }
+
+      async function calculateBackgroundTint(urlValue) {
+        if (!fastAverageColor) {
+          throw new Error("fast-average-color is unavailable");
+        }
+
+        const color = await fastAverageColor.getColorAsync(urlValue, {
+          algorithm: "dominant",
+          crossOrigin: "anonymous",
+          silent: true,
+        });
+        const tintRgb = readCachedTintRgb(color?.value);
+
+        if (!tintRgb) {
+          throw new Error("Background tint could not be derived");
+        }
+
+        return tintRgb;
       }
 
       function isHttpUrl(value) {
@@ -831,21 +1272,138 @@
         return "data:image/svg+xml," + encodeURIComponent(svg);
       }
 
-      function loadFavicon(imgElement, bookmark) {
-        const sources = getFaviconCandidates(bookmark.url);
+      function getBookmarkIconTintColor(tintRgb) {
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const targetRgb = prefersDark ? [20, 28, 38] : [255, 255, 255];
+        const softenedRgb = tintRgb.map(function (channel, index) {
+          return mixChannel(channel, targetRgb[index], prefersDark ? 0.5 : 0.4);
+        });
+
+        return (
+          "rgb(" +
+          softenedRgb.join(" ") +
+          " / " +
+          (prefersDark ? "78%" : "90%") +
+          ")"
+        );
+      }
+
+      function setBookmarkIconTint(iconWrapElement, tintRgb) {
+        if (!iconWrapElement) {
+          return;
+        }
+
+        if (!tintRgb) {
+          iconWrapElement.style.removeProperty("--bookmark-background-tint");
+          return;
+        }
+
+        iconWrapElement.style.setProperty(
+          "--bookmark-background-tint",
+          getBookmarkIconTintColor(tintRgb),
+        );
+      }
+
+      async function calculateFaviconTint(source) {
+        if (!fastAverageColor || !source) {
+          return null;
+        }
+
+        const cachedTint = getCachedFaviconTint(source);
+
+        if (cachedTint) {
+          return cachedTint;
+        }
+
+        try {
+          const color = await fastAverageColor.getColorAsync(source, {
+            algorithm: "dominant",
+            crossOrigin: "anonymous",
+            silent: true,
+          });
+          const tintRgb = readCachedTintRgb(color?.value);
+
+          if (!tintRgb) {
+            return null;
+          }
+
+          rememberFaviconTint(source, tintRgb);
+          return tintRgb;
+        } catch {
+          return null;
+        }
+      }
+
+      function loadFavicon(imgElement, iconWrapElement, bookmark) {
+        const sources = getFaviconCandidates(bookmark.url).filter(
+          function (source) {
+            return !hasFaviconFailure(source);
+          },
+        );
         let sourceIndex = 0;
+        let currentSource = null;
+        let tintRequestId = 0;
+
+        async function updateIconTint(preferredSource) {
+          const requestId = ++tintRequestId;
+          const tintSources = [];
+
+          if (preferredSource) {
+            tintSources.push(preferredSource);
+          }
+
+          getFaviconCandidates(bookmark.url).forEach(function (source) {
+            if (source !== preferredSource && !hasFaviconFailure(source)) {
+              tintSources.push(source);
+            }
+          });
+
+          for (const source of tintSources) {
+            const tintRgb = await calculateFaviconTint(source);
+
+            if (requestId !== tintRequestId) {
+              return;
+            }
+
+            if (tintRgb) {
+              setBookmarkIconTint(iconWrapElement, tintRgb);
+              return;
+            }
+          }
+
+          if (requestId === tintRequestId) {
+            setBookmarkIconTint(iconWrapElement, FALLBACK_ICON_TINT_RGB);
+          }
+        }
+
+        function handleLoad() {
+          clearFaviconFailure(currentSource);
+          updateIconTint(currentSource);
+          imgElement.removeEventListener("load", handleLoad);
+          imgElement.removeEventListener("error", applyNextSource);
+        }
 
         function applyNextSource() {
+          rememberFaviconFailure(currentSource);
+
           if (sourceIndex < sources.length) {
-            imgElement.src = sources[sourceIndex];
+            currentSource = sources[sourceIndex];
+            imgElement.src = currentSource;
             sourceIndex += 1;
             return;
           }
 
+          currentSource = null;
           imgElement.src = buildFallbackIcon(bookmark.title);
+          setBookmarkIconTint(iconWrapElement, FALLBACK_ICON_TINT_RGB);
+          imgElement.removeEventListener("load", handleLoad);
           imgElement.removeEventListener("error", applyNextSource);
         }
 
+        setBookmarkIconTint(iconWrapElement, null);
+        imgElement.addEventListener("load", handleLoad);
         imgElement.addEventListener("error", applyNextSource);
         applyNextSource();
       }
@@ -867,7 +1425,7 @@
         icon.alt = "";
         icon.decoding = "async";
         icon.loading = "lazy";
-        loadFavicon(icon, bookmark);
+        loadFavicon(icon, iconWrap, bookmark);
 
         const title = document.createElement("span");
         title.className = "bookmark-title";
@@ -987,18 +1545,18 @@
       }
 
       async function applyBingBackground() {
+        const today = getTodayDateString();
+        const cachedEntry = readBingCacheEntry();
+
+        let backgroundUrl = null;
+        let tintRgb = null;
+
         try {
-          const today = new Date().toISOString().split("T")[0];
-          const cachedData = readJsonStorage(BING_CACHE_KEY);
-
-          let backgroundUrl = null;
-
-          if (cachedData && cachedData.date === today) {
-            backgroundUrl = cachedData.url;
+          if (cachedEntry && cachedEntry.date === today) {
+            backgroundUrl = cachedEntry.url;
+            tintRgb = cachedEntry.tint;
           } else {
-            const proxyUrl =
-              "https://api.allorigins.win/raw?url=" +
-              encodeURIComponent(BING_API_URL);
+            const proxyUrl = buildProxyUrl(BING_API_URL);
             const data = await fetchJsonWithTimeout(proxyUrl, 10000);
             const imagePath = data?.images?.[0]?.url;
 
@@ -1007,20 +1565,35 @@
             }
 
             backgroundUrl = "https://www.bing.com" + imagePath;
-            writeJsonStorage(BING_CACHE_KEY, {
-              date: today,
-              url: backgroundUrl,
-            });
           }
-
-          document.body.style.backgroundImage =
-            "url(" + JSON.stringify(backgroundUrl) + ")";
         } catch (error) {
           console.warn("Background image was not loaded.", error);
+          return;
         }
+
+        applyBackgroundTheme(backgroundUrl, tintRgb);
+
+        if (!tintRgb) {
+          try {
+            tintRgb = await calculateBackgroundTint(backgroundUrl);
+            applyBackgroundTheme(backgroundUrl, tintRgb);
+          } catch (error) {
+            console.warn("Background tint was not applied.", error);
+          }
+        }
+
+        writeBingCacheEntry({
+          date: today,
+          url: backgroundUrl,
+          tint: tintRgb,
+        });
       }
 
       function initializeBookmarks() {
+        const colorSchemeMediaQuery =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)");
+
         bookmarksEditMode = loadBookmarksEditMode();
         syncBookmarksEditButton();
         bookmarksEditButton.addEventListener("click", toggleBookmarksEditMode);
@@ -1066,6 +1639,18 @@
           renderBookmarks(bookmarks);
           announceBookmarkStatus("Added bookmark " + title + ".");
         });
+
+        if (colorSchemeMediaQuery) {
+          if (typeof colorSchemeMediaQuery.addEventListener === "function") {
+            colorSchemeMediaQuery.addEventListener(
+              "change",
+              applyCachedBackgroundTheme,
+            );
+          } else if (typeof colorSchemeMediaQuery.addListener === "function") {
+            colorSchemeMediaQuery.addListener(applyCachedBackgroundTheme);
+          }
+        }
+
         renderBookmarks();
       }
 
