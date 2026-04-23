@@ -119,8 +119,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding: clamp(96px, 24dvh, 220px) 32px
-          calc(32px + env(safe-area-inset-bottom));
+        padding: 30dvh 32px calc(32px + env(safe-area-inset-bottom));
         overflow-y: auto;
         overflow-x: hidden;
         overscroll-behavior-y: contain;
@@ -205,11 +204,11 @@
           var(--shadow-soft);
       }
 
-      .bookmarks-header {
+      .bookmarks-footer {
         display: flex;
         justify-content: center;
         gap: 10px;
-        margin-top: 14px;
+        margin-top: auto;
       }
 
       .bookmarks-edit-button,
@@ -543,24 +542,25 @@
 
       <section class="bookmarks" aria-label="Bookmark shortcuts">
         <div id="bookmarksGrid" class="bookmarks-grid"></div>
-        <div class="bookmarks-header">
-          <button
-            id="bookmarksEditButton"
-            class="bookmarks-edit-button"
-            type="button"
-            aria-pressed="false"
-          >
-            Edit
-          </button>
-          <button
-            id="bookmarksResetButton"
-            class="bookmarks-reset-button"
-            type="button"
-            hidden
-          >
-            Reset
-          </button>
-        </div>
+      </section>
+
+      <section class="bookmarks-footer" aria-label="Bookmarks actions">
+        <button
+          id="bookmarksEditButton"
+          class="bookmarks-edit-button"
+          type="button"
+          aria-pressed="false"
+        >
+          Edit
+        </button>
+        <button
+          id="bookmarksResetButton"
+          class="bookmarks-reset-button"
+          type="button"
+          hidden
+        >
+          Reset
+        </button>
       </section>
     </main>
 
@@ -1456,11 +1456,7 @@
           readCssRgbTriplet("--color-bookmark-soften-target-rgb") ||
           (prefersDark ? [30, 41, 56] : [233, 239, 245]);
         const softenedRgb = tintRgb.map(function (channel, index) {
-          return mixChannel(
-            channel,
-            targetRgb[index],
-            prefersDark ? 0.84 : 0.88,
-          );
+          return mixChannel(channel, targetRgb[index], 0.5);
         });
 
         return "rgb(" + softenedRgb.join(" ") + " / " + "40%" + ")";
